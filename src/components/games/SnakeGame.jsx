@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
+import { FiArrowDown, FiArrowLeft, FiArrowRight, FiArrowUp } from "react-icons/fi";
 
 const GRID_SIZE = 20;
 const INITIAL_SNAKE = [
@@ -11,6 +12,18 @@ const INITIAL_SNAKE = [
 ];
 const INITIAL_DIRECTION = { x: 0, y: -1 }; // Moving UP initially
 const SPEED = 120; // ms per tick
+const KEY_DIRECTIONS = {
+  ArrowUp: { x: 0, y: -1 },
+  ArrowDown: { x: 0, y: 1 },
+  ArrowLeft: { x: -1, y: 0 },
+  ArrowRight: { x: 1, y: 0 },
+};
+const TOUCH_CONTROLS = [
+  { key: "ArrowUp", label: "Move up", Icon: FiArrowUp, area: "col-start-2" },
+  { key: "ArrowLeft", label: "Move left", Icon: FiArrowLeft, area: "col-start-1 row-start-2" },
+  { key: "ArrowDown", label: "Move down", Icon: FiArrowDown, area: "col-start-2 row-start-2" },
+  { key: "ArrowRight", label: "Move right", Icon: FiArrowRight, area: "col-start-3 row-start-2" },
+];
 
 export default function SnakeGame() {
   const [snake, setSnake] = useState(INITIAL_SNAKE);
@@ -23,6 +36,12 @@ export default function SnakeGame() {
 
   // Use a ref to store the latest direction to prevent quick double-turn self-collisions
   const directionRef = useRef(INITIAL_DIRECTION);
+
+  // A reversal into the snake's own neck is ignored
+  const steer = useCallback((next) => {
+    const { x, y } = directionRef.current;
+    if (next.x !== -x || next.y !== -y) setDirection(next);
+  }, []);
 
   const generateFood = useCallback((currentSnake) => {
     let newFood;
@@ -97,17 +116,14 @@ export default function SnakeGame() {
 
   useEffect(() => {
     const handleKeyDown = (e) => {
-      // Prevent default scrolling for arrow keys
-      if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " "].includes(e.key)) {
-        e.preventDefault();
-      }
+      // Focused links and buttons keep their own Space and Enter behaviour
+      if ((e.key === " " || e.key === "Enter") && e.target.closest("a, button")) return;
 
-      const { x, y } = directionRef.current;
+      // Prevent default scrolling only while the game owns the keyboard
+      if (!isPaused && !gameOver && e.key in KEY_DIRECTIONS) e.preventDefault();
+      if (e.key === " " && !gameOver) e.preventDefault();
 
-      if (e.key === "ArrowUp" && y !== 1) setDirection({ x: 0, y: -1 });
-      if (e.key === "ArrowDown" && y !== -1) setDirection({ x: 0, y: 1 });
-      if (e.key === "ArrowLeft" && x !== 1) setDirection({ x: -1, y: 0 });
-      if (e.key === "ArrowRight" && x !== -1) setDirection({ x: 1, y: 0 });
+      if (e.key in KEY_DIRECTIONS) steer(KEY_DIRECTIONS[e.key]);
 
       if (e.key === " " || e.key === "Enter") {
           if (gameOver) resetGame();
@@ -117,7 +133,7 @@ export default function SnakeGame() {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [gameOver]);
+  }, [gameOver, isPaused, steer]);
 
   // Update ref when state changes
   useEffect(() => {
@@ -125,24 +141,24 @@ export default function SnakeGame() {
   }, [direction]);
 
   return (
-    <div className="bg-[#112240] p-6 sm:p-8 rounded-2xl shadow-xl border border-gray-800 flex flex-col items-center w-full max-w-lg mx-auto">
-      <h2 className="text-3xl font-bold text-gray-100 mb-6 font-mono text-center tracking-wider">
+    <div className="bg-surface p-6 sm:p-8 rounded-2xl shadow-xl border border-line flex flex-col items-center w-full max-w-lg mx-auto">
+      <h2 className="text-3xl font-bold text-ink mb-6 font-mono text-center tracking-wider">
         SNAKE RUN
       </h2>
 
       <div className="flex justify-between w-full mb-4 px-2">
-        <div className="text-gray-400 font-mono text-lg">
-          SCORE: <span className="text-green-400 font-bold">{score}</span>
+        <div className="text-muted font-mono text-lg">
+          SCORE: <span className="text-zellige font-bold">{score}</span>
         </div>
-        <div className="text-gray-400 font-mono text-lg">
-          BEST: <span className="text-yellow-400 font-bold">{highScore}</span>
+        <div className="text-muted font-mono text-lg">
+          BEST: <span className="text-accent font-bold">{highScore}</span>
         </div>
       </div>
 
-      <div className="relative bg-[#0a192f] border-4 border-gray-700 rounded-lg overflow-hidden shadow-inner">
+      <div className="relative bg-bg border-4 border-line rounded-lg overflow-hidden shadow-inner">
         {/* Game Grid */}
         <div
-          className="grid gap-[1px] bg-gray-800/30"
+          className="grid gap-[1px] bg-line"
           style={{
             gridTemplateColumns: `repeat(${GRID_SIZE}, minmax(0, 1fr))`,
             width: "min(300px, 80vw)",
@@ -162,11 +178,11 @@ export default function SnakeGame() {
                 key={i}
                 className={`w-full h-full ${
                   isHead
-                    ? "bg-green-400 rounded-sm"
+                    ? "bg-zellige rounded-sm"
                     : isSnake
-                    ? "bg-green-500/80 rounded-sm"
+                    ? "bg-zellige/70 rounded-sm"
                     : isFood
-                    ? "bg-red-500 rounded-full shadow-[0_0_8px_rgba(239,68,68,0.8)]"
+                    ? "bg-accent-fill rounded-full"
                     : "bg-transparent"
                 }`}
               />
@@ -182,7 +198,7 @@ export default function SnakeGame() {
                 <h3 className="text-3xl font-bold text-red-500 mb-2">GAME OVER</h3>
                 <button
                   onClick={resetGame}
-                  className="px-6 py-2 bg-green-500 hover:bg-green-600 text-white font-bold rounded shadow-lg transition"
+                  className="px-6 py-2 bg-accent-fill hover:opacity-90 text-on-accent font-bold rounded-full transition"
                 >
                   PLAY AGAIN
                 </button>
@@ -191,19 +207,33 @@ export default function SnakeGame() {
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center">
                 <button
                   onClick={resetGame}
-                  className="px-6 py-3 bg-yellow-400 hover:bg-yellow-500 text-[#0a192f] font-bold rounded shadow-lg transition"
+                  className="px-6 py-3 bg-accent-fill hover:opacity-90 text-on-accent font-bold rounded-full transition"
                 >
                   START GAME
                 </button>
-                <p className="mt-4 text-gray-300 text-sm">Use Arrow Keys to move.</p>
+                <p className="mt-4 text-sm text-white/80">Use the arrow keys or the buttons below.</p>
               </motion.div>
             )}
           </div>
         )}
       </div>
 
-      <div className="mt-6 text-center text-gray-500 text-xs">
-        Press <span className="text-gray-300 font-mono border border-gray-700 px-1 rounded">SPACE</span> to pause/unpause
+      <div className="mt-5 grid grid-cols-3 gap-2 [@media(hover:hover)]:hidden">
+        {TOUCH_CONTROLS.map(({ key, label, Icon, area }) => (
+          <button
+            key={key}
+            type="button"
+            aria-label={label}
+            onPointerDown={() => steer(KEY_DIRECTIONS[key])}
+            className={`grid size-14 place-items-center rounded-xl border border-line bg-surface-2 text-ink active:bg-accent-fill active:text-on-accent ${area}`}
+          >
+            <Icon className="size-6" aria-hidden="true" />
+          </button>
+        ))}
+      </div>
+
+      <div className="mt-6 hidden text-center text-muted text-xs [@media(hover:hover)]:block">
+        Press <span className="text-ink-soft font-mono border border-line px-1 rounded">SPACE</span> to pause/unpause
       </div>
     </div>
   );

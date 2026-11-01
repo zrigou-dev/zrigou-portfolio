@@ -80,9 +80,9 @@ export default function MemoryGame() {
   }, [matchedPairs, cards.length]);
 
   return (
-    <div className="bg-[#112240] p-6 rounded-2xl shadow-xl border border-gray-800 flex flex-col items-center">
-      <h2 className="text-3xl font-bold text-gray-100 mb-2">Memory Match</h2>
-      <div className="flex justify-between w-full max-w-[300px] mb-6 text-gray-400 font-medium">
+    <div className="bg-surface p-6 rounded-2xl shadow-xl border border-line flex flex-col items-center">
+      <h2 className="text-3xl font-bold text-ink mb-2">Memory Match</h2>
+      <div className="flex justify-between w-full max-w-[300px] mb-6 text-muted font-medium">
         <span>Moves: {moves}</span>
         <span>Matches: {matchedPairs.length} / {ICONS.length}</span>
       </div>
@@ -92,8 +92,10 @@ export default function MemoryGame() {
           const isFlipped =
             flippedIndices.includes(index) || matchedPairs.includes(card.icon.key);
           return (
-            <motion.div
+            <motion.button
               key={card.id}
+              type="button"
+              aria-label={isFlipped ? `Card ${index + 1}, ${card.icon.key}` : `Card ${index + 1}, face down`}
               className="relative w-16 h-16 sm:w-20 sm:h-20 aspect-square cursor-pointer"
               onClick={() => handleCardClick(index)}
               whileHover={{ scale: isFlipped ? 1 : 1.05 }}
@@ -108,21 +110,21 @@ export default function MemoryGame() {
               >
                 {/* Back of Card (Hidden) */}
                 <div
-                  className={`absolute w-full h-full flex items-center justify-center rounded-xl bg-[#0a192f] border-blue-500/30 backface-hidden`}
+                  className={`absolute w-full h-full flex items-center justify-center rounded-xl bg-bg border-line backface-hidden`}
                   style={{ backfaceVisibility: "hidden" }}
                 >
-                  <div className="w-1/2 h-1/2 rounded-full bg-blue-500/20"></div>
+                  <div className="w-1/2 h-1/2 rounded-full bg-surface-2"></div>
                 </div>
 
                 {/* Front of Card (Revealed) */}
                 <div
-                  className={`absolute w-full h-full flex items-center justify-center rounded-xl bg-yellow-400 border-yellow-500 text-[#0a192f] backface-hidden text-2xl sm:text-3xl`}
+                  className={`absolute w-full h-full flex items-center justify-center rounded-xl bg-accent-fill border-accent text-on-accent backface-hidden text-2xl sm:text-3xl`}
                   style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
                 >
                   {card.icon}
                 </div>
               </motion.div>
-            </motion.div>
+            </motion.button>
           );
         })}
       </div>
@@ -133,14 +135,14 @@ export default function MemoryGame() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-6"
         >
-          <div className="text-2xl font-bold text-green-400 mb-2">You Won! 🎉</div>
-          <p className="text-sm text-gray-400">Completed in {moves} moves.</p>
+          <div className="text-2xl font-bold text-zellige mb-2">You Won! 🎉</div>
+          <p className="text-sm text-muted">Completed in {moves} moves.</p>
         </motion.div>
       )}
 
       <button
         onClick={initializeGame}
-        className="px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg transition shadow-lg shadow-blue-500/20"
+        className="px-6 py-2 bg-accent-fill hover:opacity-90 text-on-accent font-semibold rounded-full transition"
       >
         {isWon ? "Play Again" : "Restart Game"}
       </button>

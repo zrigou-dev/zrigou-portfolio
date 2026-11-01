@@ -131,17 +131,17 @@ export default function TicTacToe() {
   };
 
   return (
-    <div className="bg-[#112240] p-6 sm:p-8 rounded-2xl shadow-xl border border-gray-800 flex flex-col items-center w-full max-w-sm mx-auto">
-      <h2 className="text-3xl font-bold text-gray-100 mb-4 font-mono text-center tracking-wider">
+    <div className="bg-surface p-6 sm:p-8 rounded-2xl shadow-xl border border-line flex flex-col items-center w-full max-w-sm mx-auto">
+      <h2 className="text-3xl font-bold text-ink mb-4 font-mono text-center tracking-wider">
         TIC TAC TOE
       </h2>
 
       {/* Mode Selector */}
-      <div className="flex bg-[#0a192f] rounded-lg p-1 mb-6 border border-gray-800 w-full relative">
+      <div className="flex bg-bg rounded-lg p-1 mb-6 border border-line w-full relative">
         <button
           onClick={() => toggleMode(true)}
           className={`flex-1 py-1.5 text-sm font-semibold z-10 transition-colors duration-300 ${
-            isVsRobot ? "text-[#0a192f]" : "text-gray-400 hover:text-gray-200"
+            isVsRobot ? "text-on-accent" : "text-muted hover:text-ink"
           }`}
         >
           Vs Robot 🤖
@@ -149,7 +149,7 @@ export default function TicTacToe() {
         <button
           onClick={() => toggleMode(false)}
           className={`flex-1 py-1.5 text-sm font-semibold z-10 transition-colors duration-300 ${
-            !isVsRobot ? "text-[#0a192f]" : "text-gray-400 hover:text-gray-200"
+            !isVsRobot ? "text-on-accent" : "text-muted hover:text-ink"
           }`}
         >
           Player Vs Player
@@ -157,7 +157,7 @@ export default function TicTacToe() {
         {/* Animated Pill Background */}
         <motion.div
           layout
-          className="absolute top-1 bottom-1 w-[calc(50%-4px)] bg-yellow-400 rounded-md z-0 shadow-sm"
+          className="absolute top-1 bottom-1 w-[calc(50%-4px)] bg-accent-fill rounded-md z-0 shadow-sm"
           animate={{ x: isVsRobot ? 2 : "calc(100% + 4px)" }}
           transition={{ type: "spring", stiffness: 300, damping: 25 }}
         />
@@ -169,17 +169,17 @@ export default function TicTacToe() {
             isXNext && !winner && !isDraw ? "opacity-100" : "opacity-30"
           }`}
         >
-          <span className="text-yellow-400 text-2xl">X</span>
-          <span className="text-xs text-gray-400 uppercase tracking-widest mt-1">Player 1</span>
+          <span className="text-accent text-2xl">X</span>
+          <span className="text-xs text-muted uppercase tracking-widest mt-1">Player 1</span>
         </div>
-        <div className="text-gray-500 font-bold text-sm">VS</div>
+        <div className="text-muted font-bold text-sm">VS</div>
         <div
           className={`font-semibold flex flex-col items-center transition-opacity duration-300 ${
             !isXNext && !winner && !isDraw ? "opacity-100" : "opacity-30"
           }`}
         >
-          <span className="text-blue-400 text-2xl">O</span>
-          <span className="text-xs text-gray-400 uppercase tracking-widest mt-1">
+          <span className="text-zellige text-2xl">O</span>
+          <span className="text-xs text-muted uppercase tracking-widest mt-1">
             {isVsRobot ? (isRobotThinking ? "Thinking..." : "Robot") : "Player 2"}
           </span>
         </div>
@@ -192,10 +192,10 @@ export default function TicTacToe() {
             <motion.button
               key={index}
               onClick={() => handleClick(index)}
-              className={`h-24 w-24 sm:w-20 sm:h-20 bg-[#0a192f] border-2 rounded-xl flex items-center justify-center text-4xl sm:text-5xl font-bold transition-all shadow-inner focus:outline-none ${
+              className={`h-24 w-24 sm:w-20 sm:h-20 bg-bg border-2 rounded-xl flex items-center justify-center text-4xl sm:text-5xl font-bold transition-all shadow-inner focus:outline-none ${
                 isWinningSquare
-                  ? "border-green-400 font-mono shadow-green-400/20 shadow-lg scale-105 z-10"
-                  : "border-gray-800 hover:border-gray-600"
+                  ? "border-zellige font-mono shadow-lg scale-105 z-10"
+                  : "border-line hover:border-line-strong"
               } ${isRobotThinking && !symbol ? "opacity-70 cursor-wait" : ""}`}
               whileHover={{ scale: symbol || winner || isRobotThinking ? 1 : 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -206,7 +206,7 @@ export default function TicTacToe() {
                   initial={{ opacity: 0, scale: 0.5 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                  className={symbol === "X" ? "text-yellow-400 font-sans" : "text-blue-400 font-sans"}
+                  className={symbol === "X" ? "text-accent font-sans" : "text-zellige font-sans"}
                 >
                   {symbol}
                 </motion.span>
@@ -221,7 +221,7 @@ export default function TicTacToe() {
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-2xl font-bold text-green-400 tracking-wide"
+            className="text-2xl font-bold text-zellige tracking-wide"
           >
             {winner === "X" ? "Player 1" : isVsRobot ? "Robot" : "Player 2"} Wins! 🎉
           </motion.div>
@@ -229,7 +229,7 @@ export default function TicTacToe() {
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-2xl font-bold text-gray-400 tracking-wide"
+            className="text-2xl font-bold text-muted tracking-wide"
           >
             It's a Draw! 🤝
           </motion.div>
@@ -240,7 +240,7 @@ export default function TicTacToe() {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={resetGame}
-        className="px-8 py-3 bg-transparent border-2 border-green-500 text-green-400 font-bold rounded-lg hover:bg-green-500 hover:text-white transition duration-300 w-full tracking-wider uppercase text-sm"
+        className="px-8 py-3 bg-transparent border-2 border-zellige text-zellige font-bold rounded-lg hover:bg-zellige hover:text-bg transition duration-300 w-full tracking-wider uppercase text-sm"
       >
         {winner || isDraw ? "Play Again" : "Reset Game"}
       </motion.button>

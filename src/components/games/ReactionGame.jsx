@@ -61,9 +61,9 @@ export default function ReactionGame() {
     switch(gameState) {
       case 1: return "bg-red-500 hover:bg-red-600";
       case 2: return "bg-green-500 hover:bg-green-600 cursor-pointer";
-      case 3: return "bg-blue-600 hover:bg-blue-700 cursor-pointer";
+      case 3: return "bg-[#0b7a6b] hover:bg-[#0a6c5f] cursor-pointer";
       case 4: return "bg-orange-600 hover:bg-orange-700 cursor-pointer";
-      default: return "bg-[#0a192f] hover:bg-[#112240] cursor-pointer border border-blue-500";
+      default: return "bg-bg hover:bg-surface-2 cursor-pointer border border-line";
     }
   };
 
@@ -87,7 +87,7 @@ export default function ReactionGame() {
         return (
           <div className="flex flex-col items-center">
              <div className="text-white text-lg font-medium mb-2">Reaction Time:</div>
-             <div className="text-5xl font-mono font-bold text-yellow-300 mb-6">{reactionTime} ms</div>
+             <div className="text-5xl font-mono font-bold text-white mb-6">{reactionTime} ms</div>
              <div className="text-white/80 text-sm tracking-widest uppercase font-semibold">Click to try again</div>
           </div>
         );
@@ -104,24 +104,24 @@ export default function ReactionGame() {
         return (
           <div className="flex flex-col items-center text-center px-4">
              <span className="text-6xl mb-6">⏱️</span>
-             <h3 className="text-3xl font-bold text-gray-100 mb-4 font-mono">REACTION TEST</h3>
-             <p className="text-gray-400 mb-8 max-w-xs">When the red box turns green, click as quickly as you can!</p>
-             <div className="px-8 py-3 bg-yellow-400 text-[#0a192f] font-bold rounded shadow-lg">START TEST</div>
+             <h3 className="text-3xl font-bold text-ink mb-4 font-mono">REACTION TEST</h3>
+             <p className="text-muted mb-8 max-w-xs">When the red box turns green, click as quickly as you can!</p>
+             <div className="px-8 py-3 bg-accent-fill text-on-accent font-bold rounded shadow-lg">START TEST</div>
           </div>
         );
     }
   };
 
   return (
-    <div className="bg-[#112240] p-6 sm:p-8 rounded-2xl shadow-xl border border-gray-800 flex flex-col items-center w-full max-w-lg mx-auto">
+    <div className="bg-surface p-6 sm:p-8 rounded-2xl shadow-xl border border-line flex flex-col items-center w-full max-w-lg mx-auto">
       
       {/* Best Score Header */}
       <div className="flex justify-between items-center w-full mb-6">
-        <h2 className="text-xl font-bold text-gray-300 font-mono tracking-widest">
+        <h2 className="text-xl font-bold text-ink-soft font-mono tracking-widest">
            SPEED TEST
         </h2>
-        <div className="text-sm font-sans font-medium text-gray-400 bg-[#0a192f] px-3 py-1.5 rounded-full border border-gray-700">
-           BEST: <span className="text-yellow-400 font-bold ml-1">{bestTime ? `${bestTime} ms` : "---"}</span>
+        <div className="text-sm font-sans font-medium text-muted bg-bg px-3 py-1.5 rounded-full border border-line">
+           BEST: <span className="text-accent font-bold ml-1">{bestTime ? `${bestTime} ms` : "---"}</span>
         </div>
       </div>
 

@@ -1,174 +1,132 @@
-import { useState } from "react";
+"use client";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { FaGamepad } from "react-icons/fa";
+import { usePathname } from "next/navigation";
+import { FiDownload, FiMenu, FiX } from "react-icons/fi";
+import Logo from "@/components/Logo";
+import ThemeToggle from "@/components/ThemeToggle";
+import { navLinks, site } from "@/data/site";
 
 export default function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const pathname = usePathname();
+  const menuRef = useRef(null);
+  const [activeId, setActiveId] = useState(null);
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
+  // Highlights the section that crosses the middle of the viewport.
+  useEffect(() => {
+    if (pathname !== "/") return undefined;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) setActiveId(entry.target.id);
+        }
+      },
+      { rootMargin: "-45% 0px -50% 0px" }
+    );
+    for (const link of navLinks) {
+      const section = document.getElementById(link.id);
+      if (section) observer.observe(section);
+    }
+    return () => {
+      observer.disconnect();
+      setActiveId(null);
+    };
+  }, [pathname]);
 
-  const downloadCV = () => {
-    const cvUrl = "/cv.pdf"; 
-    const link = document.createElement("a");
-    link.href = cvUrl;
-    link.download = "Zrigou_CV.pdf"; 
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
+  const openMenu = () => menuRef.current?.showModal();
+  const closeMenu = () => menuRef.current?.close();
 
   return (
-    <header className="bg-[#0a192f] text-gray-300 sticky top-0 z-50 shadow-lg">
-      <div className="container mx-auto px-4 py-4">
-        <div className="flex justify-between items-center">
-          <Link href="/" className="flex items-center space-x-2 group">
-            <div className="w-10 h-10 bg-yellow-400 rounded-full flex items-center justify-center transform group-hover:rotate-12 transition duration-300">
-              <span className="text-[#0a192f] font-bold text-xl">M</span>
-            </div>
-            <span className="text-2xl font-bold text-yellow-400 hidden sm:inline-block">
-              M.ZRIGOU
-            </span>
-          </Link>
+    <header className="fixed inset-x-0 top-0 z-50 p-3">
+      <div className="mx-auto flex max-w-[88rem] items-center justify-between gap-4 rounded-full border border-line bg-bg/75 py-1.5 pl-5 pr-2 backdrop-blur-xl">
+        <Logo />
 
-          <button
-            className="md:hidden focus:outline-none"
-            aria-label="Toggle menu"
-            onClick={toggleMenu}
-          >
-            <div className="w-8 flex flex-col space-y-1.5">
-              <span
-                className="h-0.5 w-full bg-yellow-400 rounded-full transition-transform duration-300"
-                style={{
-                  transform: isMenuOpen
-                    ? "rotate(45deg) translate(5px,5px)"
-                    : "none",
-                }}
-              ></span>
-              <span
-                className="h-0.5 w-full bg-yellow-400 rounded-full transition-opacity duration-300"
-                style={{ opacity: isMenuOpen ? 0 : 1 }}
-              ></span>
-              <span
-                className="h-0.5 w-3/4 bg-yellow-400 rounded-full ml-auto transition-transform duration-300"
-                style={{
-                  transform: isMenuOpen
-                    ? "rotate(-45deg) translate(5px,-5px)"
-                    : "none",
-                }}
-              ></span>
-            </div>
-          </button>
-
-          <nav className="hidden md:flex space-x-8">
-            <Link
-              href="/#about"
-              className="hover:text-yellow-400 transition duration-300 font-medium"
-            >
-              About
-            </Link>
-            <Link
-              href="/#services"
-              className="hover:text-yellow-400 transition duration-300 font-medium"
-            >
-              Services
-            </Link>
-            <Link
-              href="/#portfolio"
-              className="hover:text-yellow-400 transition duration-300 font-medium"
-            >
-              portfolio
-            </Link>
-            <Link
-              href="/#skills"
-              className="hover:text-yellow-400 transition duration-300 font-medium"
-            >
-              Skills
-            </Link>
-            <Link
-              href="/#contact"
-              className="hover:text-yellow-400 transition duration-300 font-medium"
-            >
-              Contact
-            </Link>
-          </nav>
-
-          {/* Action Buttons */}
-          <div className="hidden md:flex items-center space-x-5">
-            <Link
-              href="/games"
-              className="group flex items-center justify-center p-2 rounded-full bg-[#112240] border border-gray-800 hover:border-yellow-400 hover:bg-[#1e2f4a] transition-all duration-300 shadow-md"
-              title="Mini Games"
-            >
-              <FaGamepad className="text-xl sm:text-2xl text-gray-400 group-hover:text-yellow-400 transition-colors" />
-            </Link>
-            <button
-              onClick={downloadCV}
-              className="px-6 py-2 bg-yellow-400 text-[#0a192f] font-bold rounded-md hover:bg-yellow-300 transition duration-300 transform hover:scale-105"
-            >
-              Download CV
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div
-        className={`md:hidden bg-[#0a192f] py-4 px-4 transition-all duration-300 overflow-hidden ${
-          isMenuOpen ? "block" : "hidden"
-        }`}
-      >
-        <div className="flex flex-col space-y-4">
-          <Link
-            href="/#about"
-            className="hover:text-yellow-400 transition duration-300"
-            onClick={() => setIsMenuOpen(false)}
-          >
-            About
-          </Link>
-          <Link
-            href="/#services"
-            className="hover:text-yellow-400 transition duration-300"
-            onClick={() => setIsMenuOpen(false)}
-          >
-            Services
-          </Link>
-          <Link
-            href="/#portfolio"
-            className="hover:text-yellow-400 transition duration-300"
-            onClick={() => setIsMenuOpen(false)}
-          >
-            portfolio
-          </Link>
-          <Link
-            href="/#skills"
-            className="hover:text-yellow-400 transition duration-300"
-            onClick={() => setIsMenuOpen(false)}
-          >
-            Skills
-          </Link>
+        <nav aria-label="Primary" className="hidden items-center gap-1 lg:flex">
+          {navLinks.map((link) => {
+            const isActive = activeId === link.id;
+            return (
+              <Link
+                key={link.id}
+                href={link.href}
+                aria-current={isActive ? "true" : undefined}
+                className={`rounded-full px-4 py-2.5 text-sm font-medium transition-colors ${
+                  isActive ? "bg-surface-2 text-ink" : "text-muted hover:text-ink"
+                }`}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
           <Link
             href="/games"
-            className="hover:text-yellow-400 transition duration-300 text-yellow-500 font-semibold flex items-center"
-            onClick={() => setIsMenuOpen(false)}
+            aria-current={pathname === "/games" ? "page" : undefined}
+            className={`rounded-full px-4 py-2.5 text-sm font-medium transition-colors ${
+              pathname === "/games" ? "bg-surface-2 text-ink" : "text-muted hover:text-ink"
+            }`}
           >
-            <FaGamepad className="mr-3 text-xl" /> Mini Games
+            Play
           </Link>
-          <Link
-            href="/#contact"
-            className="hover:text-yellow-400 transition duration-300"
-            onClick={() => setIsMenuOpen(false)}
+        </nav>
+
+        <div className="flex items-center gap-1">
+          <ThemeToggle />
+          <a
+            href={site.cv}
+            download={site.cvFilename}
+            className="hidden min-h-11 items-center gap-2 whitespace-nowrap rounded-full bg-accent-fill px-5 text-sm font-semibold text-on-accent transition-transform duration-300 hover:-translate-y-0.5 sm:inline-flex"
           >
-            Contact
-          </Link>
+            <FiDownload aria-hidden="true" /> Download CV
+          </a>
           <button
-            onClick={downloadCV}
-            className="w-full py-2 bg-yellow-400 text-[#0a192f] font-bold rounded-md hover:bg-yellow-300 transition duration-300"
+            type="button"
+            onClick={openMenu}
+            aria-label="Open menu"
+            aria-haspopup="dialog"
+            className="grid size-11 place-items-center rounded-full bg-surface-2 lg:hidden"
           >
-            Download CV
+            <FiMenu className="size-5" aria-hidden="true" />
           </button>
         </div>
       </div>
+      <div aria-hidden="true" className="scroll-progress fixed inset-x-0 top-0 h-0.5 bg-accent-fill" />
+
+      <dialog
+        ref={menuRef}
+        aria-label="Menu"
+        onClick={(event) => {
+          if (event.target === menuRef.current) closeMenu();
+        }}
+        className="m-0 h-dvh max-h-none w-full max-w-none bg-bg p-3 text-ink backdrop:bg-transparent"
+      >
+        <div className="flex h-full flex-col">
+          <div className="flex items-center justify-between py-1.5 pl-5 pr-2">
+            <Logo />
+            <button
+              type="button"
+              onClick={closeMenu}
+              aria-label="Close menu"
+              className="grid size-11 place-items-center rounded-full bg-surface-2"
+            >
+              <FiX className="size-5" aria-hidden="true" />
+            </button>
+          </div>
+          <nav aria-label="Mobile" className="flex flex-1 flex-col justify-center gap-1 px-5">
+            {[...navLinks, { href: "/games", id: "games", label: "Play" }].map((link) => (
+              <Link
+                key={link.id}
+                href={link.href}
+                onClick={closeMenu}
+                className="py-2 font-display text-5xl font-bold tracking-tight"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+          <a href={site.cv} download={site.cvFilename} className="btn btn-primary m-5">
+            <FiDownload aria-hidden="true" /> Download CV
+          </a>
+        </div>
+      </dialog>
     </header>
   );
 }

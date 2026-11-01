@@ -54,36 +54,36 @@ export default function RockPaperScissors() {
   };
 
   const getResultColor = () => {
-    if (result === "win") return "text-green-400";
-    if (result === "lose") return "text-red-400";
-    return "text-yellow-400";
+    if (result === "win") return "text-zellige";
+    if (result === "lose") return "text-red-600 dark:text-red-400";
+    return "text-accent";
   };
 
   return (
-    <div className="bg-[#112240] p-6 sm:p-8 rounded-2xl shadow-xl border border-gray-800 flex flex-col items-center w-full max-w-sm mx-auto">
-      <h2 className="text-3xl font-bold text-gray-100 mb-6 font-mono text-center">
+    <div className="bg-surface p-6 sm:p-8 rounded-2xl shadow-xl border border-line flex flex-col items-center w-full max-w-sm mx-auto">
+      <h2 className="text-3xl font-bold text-ink mb-6 font-mono text-center">
         RPC BATTLE
       </h2>
 
       {/* Scoreboard */}
-      <div className="flex justify-between w-full mb-8 bg-[#0a192f] p-4 rounded-xl border border-gray-800">
+      <div className="flex justify-between w-full mb-8 bg-bg p-4 rounded-xl border border-line">
         <div className="text-center">
-          <div className="text-gray-400 text-xs font-bold uppercase tracking-wider mb-1">Player</div>
-          <div className="text-3xl font-bold text-blue-400">{score.player}</div>
+          <div className="text-muted text-xs font-bold uppercase tracking-wider mb-1">Player</div>
+          <div className="text-3xl font-bold text-zellige">{score.player}</div>
         </div>
-        <div className="text-center flex items-center justify-center font-bold text-gray-500 text-xl px-4">
+        <div className="text-center flex items-center justify-center font-bold text-muted text-xl px-4">
           VS
         </div>
         <div className="text-center">
-          <div className="text-gray-400 text-xs font-bold uppercase tracking-wider mb-1">Computer</div>
-          <div className="text-3xl font-bold text-red-400">{score.computer}</div>
+          <div className="text-muted text-xs font-bold uppercase tracking-wider mb-1">Computer</div>
+          <div className="text-3xl font-bold text-red-600 dark:text-red-400">{score.computer}</div>
         </div>
       </div>
 
       {/* Arena */}
       <div className="flex justify-between items-center w-full h-32 mb-8 relative">
         {/* Player Side */}
-        <div className="w-24 h-24 flex items-center justify-center bg-[#0a192f] rounded-full border-2 border-blue-500/30">
+        <div className="w-24 h-24 flex items-center justify-center bg-bg rounded-full border-2 border-line">
           <AnimatePresence mode="wait">
             {playerChoice ? (
               <motion.div
@@ -91,7 +91,7 @@ export default function RockPaperScissors() {
                 initial={{ opacity: 0, x: -50, rotate: -45 }}
                 animate={{ opacity: 1, x: 0, rotate: 0 }}
                 exit={{ opacity: 0, scale: 0.5 }}
-                className="text-blue-400"
+                className="text-zellige"
               >
                 {playerChoice.icon}
               </motion.div>
@@ -99,7 +99,7 @@ export default function RockPaperScissors() {
               <motion.div
                 animate={{ rotate: [0, -20, 0, 20, 0] }}
                 transition={{ repeat: Infinity, duration: 0.5 }}
-                className="text-gray-500 opacity-50"
+                className="text-muted opacity-50"
               >
                 <FaHandRock className="text-4xl" />
               </motion.div>
@@ -115,7 +115,7 @@ export default function RockPaperScissors() {
                 initial={{ opacity: 0, scale: 0.5, y: -20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0 }}
-                className={`text-2xl font-bold ${getResultColor()} uppercase tracking-widest bg-[#112240] px-2`}
+                className={`text-2xl font-bold ${getResultColor()} uppercase tracking-widest bg-surface px-2`}
               >
                 {result}
               </motion.div>
@@ -124,7 +124,7 @@ export default function RockPaperScissors() {
         </div>
 
         {/* Computer Side */}
-        <div className="w-24 h-24 flex items-center justify-center bg-[#0a192f] rounded-full border-2 border-red-500/30">
+        <div className="w-24 h-24 flex items-center justify-center bg-bg rounded-full border-2 border-red-500/30">
           <AnimatePresence mode="wait">
             {computerChoice ? (
               <motion.div
@@ -132,7 +132,7 @@ export default function RockPaperScissors() {
                 initial={{ opacity: 0, x: 50, rotate: 45 }}
                 animate={{ opacity: 1, x: 0, rotate: 0 }}
                 exit={{ opacity: 0, scale: 0.5 }}
-                className="text-red-400 -scale-x-100 transform" // Flip horizontal for facing player
+                className="text-red-600 dark:text-red-400 -scale-x-100 transform" // Flip horizontal for facing player
                 style={{ transform: "scaleX(-1)" }}
               >
                 {computerChoice.icon}
@@ -141,7 +141,7 @@ export default function RockPaperScissors() {
               <motion.div
                 animate={{ rotate: [0, 20, 0, -20, 0] }}
                 transition={{ repeat: Infinity, duration: 0.5, delay: 0.1 }}
-                className="text-gray-500 opacity-50 -scale-x-100 transform"
+                className="text-muted opacity-50 -scale-x-100 transform"
                 style={{ transform: "scaleX(-1)" }}
               >
                 <FaHandRock className="text-4xl" />
@@ -153,7 +153,7 @@ export default function RockPaperScissors() {
 
       {/* Controls */}
       <div className="w-full">
-        <p className="text-center text-gray-400 text-sm mb-4 font-medium uppercase tracking-wider">
+        <p className="text-center text-muted text-sm mb-4 font-medium uppercase tracking-wider">
           Choose your weapon
         </p>
         <div className="flex justify-center gap-4">
@@ -164,8 +164,8 @@ export default function RockPaperScissors() {
               disabled={isPlaying}
               whileHover={{ scale: 1.1, y: -5 }}
               whileTap={{ scale: 0.9 }}
-              className={`w-16 h-16 rounded-full flex items-center justify-center text-gray-300 transition-colors shadow-lg ${
-                isPlaying ? "bg-gray-800 cursor-not-allowed opacity-50" : "bg-[#1e2f4a] hover:bg-blue-600 hover:text-white"
+              className={`w-16 h-16 rounded-full flex items-center justify-center text-ink-soft transition-colors shadow-lg ${
+                isPlaying ? "bg-surface-2 cursor-not-allowed opacity-50" : "bg-surface-2 hover:bg-accent-fill hover:text-on-accent"
               }`}
             >
               {choice.icon}
@@ -177,7 +177,7 @@ export default function RockPaperScissors() {
       {score.player > 0 || score.computer > 0 ? (
         <button
           onClick={() => setScore({ player: 0, computer: 0 })}
-          className="mt-8 text-xs text-gray-500 hover:text-gray-300 underline transition"
+          className="mt-8 text-xs text-muted hover:text-ink underline transition"
         >
           Reset Scores
         </button>
