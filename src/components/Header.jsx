@@ -19,6 +19,29 @@ export default function Header() {
   const links = [...navLinks.map((link) => ({ ...link, label: t.nav[link.id] })), { href: "/games", id: "games", label: t.nav.play }];
   const menuRef = useRef(null);
   const [activeId, setActiveId] = useState(null);
+  const [tucked, setTucked] = useState(false);
+
+  // Tucks away while reading down the page, returns as soon as you scroll up or reach the top.
+  useEffect(() => {
+    let last = window.scrollY;
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const y = window.scrollY;
+      const delta = y - last;
+      if (y < 90 || delta < -6) setTucked(false);
+      else if (delta > 6) setTucked(true);
+      if (Math.abs(delta) > 6) last = y;
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(frame);
+    };
+  }, []);
 
   // Highlights the section that crosses the middle of the viewport.
   useEffect(() => {
@@ -45,8 +68,8 @@ export default function Header() {
   const closeMenu = () => menuRef.current?.close();
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 p-2.5 sm:p-3">
-      <div className="mx-auto flex max-w-[88rem] items-center justify-between gap-4 rounded-full border border-line bg-bg/80 py-1 ps-4 pe-1 shadow-[0_8px_30px_-12px_rgb(0_0_0/0.35)] backdrop-blur-xl sm:py-1.5 sm:ps-5 sm:pe-2">
+    <header onFocusCapture={() => setTucked(false)} className="pointer-events-none fixed inset-x-0 top-0 z-50 p-2.5 sm:p-3">
+      <div className={`site-header pointer-events-auto mx-auto flex max-w-[88rem] items-center justify-between gap-4 rounded-full border border-line bg-bg/80 py-1 ps-4 pe-1 shadow-[0_8px_30px_-12px_rgb(0_0_0/0.35)] backdrop-blur-xl sm:py-1.5 sm:ps-5 sm:pe-2 ${tucked ? "is-tucked" : ""}`}>
         <Logo />
 
         <nav aria-label={t.common.primaryNav} className="hidden items-center gap-0.5 lg:flex xl:gap-1">
@@ -96,7 +119,7 @@ export default function Header() {
         onClick={(event) => {
           if (event.target === menuRef.current) closeMenu();
         }}
-        className="menu-sheet m-0 h-dvh max-h-none w-full max-w-none bg-bg p-2.5 text-ink backdrop:bg-transparent"
+        className="menu-sheet pointer-events-auto m-0 h-dvh max-h-none w-full max-w-none bg-bg p-2.5 text-ink backdrop:bg-transparent"
       >
         <div className="flex h-full flex-col">
           <div className="flex items-center justify-between py-1 ps-4 pe-1">

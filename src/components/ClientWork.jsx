@@ -22,7 +22,7 @@ export default function ClientWork({ projects: clientProjects }) {
 
   return (
     <div onPointerMove={movePreview} onPointerLeave={() => setActiveId(null)}>
-      <ul className="border-t border-line">
+      <ul data-stagger className="border-t border-line">
         {clientProjects.map((project) => (
           <li key={project.id} className="border-b border-line" onPointerEnter={() => setActiveId(project.id)}>
             <Link

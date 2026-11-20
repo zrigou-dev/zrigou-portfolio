@@ -27,27 +27,6 @@ export const navLinks = [
   { href: "/#contact", id: "contact", label: "Contact" },
 ];
 
-export const experience = [
-  {
-    role: "Mobile & Web Developer",
-    company: "Webodrope",
-    period: "2023 – Present",
-    points: [
-      "Build cross-platform mobile and web applications with React Native and Next.js for international clients.",
-      "Integrate REST APIs with backend services and containerize development environments with Docker.",
-    ],
-  },
-  {
-    role: "Mobile & Web Developer",
-    company: "ViralWave",
-    period: "2021 – 2023",
-    points: [
-      "Developed responsive mobile and web applications using React Native and Next.js.",
-      "Improved UI/UX and application performance across several client products.",
-    ],
-  },
-];
-
 export const services = [
   {
     title: "Web applications",

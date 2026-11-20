@@ -107,10 +107,10 @@ export default function FlagshipCard({ project, index, locale, t }) {
 
   return (
     <article
-      style={{ "--n": index, background: `radial-gradient(120% 120% at 100% 0%, ${project.tint}, ${project.tintDeep} 62%)` }}
-      className="flagship-card overflow-hidden rounded-[1.5rem] text-white shadow-[inset_0_0_0_1px_rgb(255_255_255/0.08)] md:rounded-[1.75rem]"
+      style={{ background: `radial-gradient(120% 120% at 100% 0%, ${project.tint}, ${project.tintDeep} 62%)` }}
+      data-tilt className="flagship-card h-full overflow-hidden rounded-[1.5rem] text-white shadow-[inset_0_0_0_1px_rgb(255_255_255/0.08)] md:rounded-[1.75rem]"
     >
-      <div className="grid gap-8 p-5 sm:p-8 lg:min-h-[34rem] lg:grid-cols-12 lg:gap-6 lg:p-12">
+      <div className="grid h-full grid-rows-[auto_1fr] gap-7 p-5 sm:p-8 lg:min-h-[34rem] lg:grid-cols-12 lg:grid-rows-none lg:gap-6 lg:p-12">
         <div className="flex flex-col lg:col-span-5">
           <p className="font-mono text-[0.6875rem] uppercase tracking-[0.1em] text-white/70">
             0{index + 1} / {project.category}
@@ -139,7 +139,7 @@ export default function FlagshipCard({ project, index, locale, t }) {
           </div>
         </div>
 
-        <div className="flex items-center justify-center lg:col-span-7">
+        <div className="flex items-end justify-center lg:col-span-7 lg:items-center">
           <Visual />
         </div>
       </div>

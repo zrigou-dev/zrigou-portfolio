@@ -28,19 +28,16 @@ npm run check-lint
 
 ## Languages
 
-The site is in English, French and Arabic (right-to-left). English stays at the root (`/`, `/projects/sakina`), French
-and Arabic live under `/fr` and `/ar`. `next.config.mjs` rewrites the root to `/en/*` internally, so there is no proxy.
+The site is in English and French. English stays at the root (`/`, `/projects/sakina`) and French lives under `/fr`.
+`next.config.mjs` rewrites the root to `/en/*` internally, so there is no proxy. Old `/ar` links redirect to English.
 
-- **UI text:** `src/i18n/dictionaries/{en,fr,ar}.js`, one shared shape. English is the source of truth.
-- **Projects:** `src/data/projects.js` is English. `src/i18n/content/projects.{fr,ar}.js` override only the text,
+- **UI text:** `src/i18n/dictionaries/{en,fr}.js`, one shared shape. English is the source of truth.
+- **Projects:** `src/data/projects.js` is English. `src/i18n/content/projects.fr.js` overrides only the text,
   keyed by project id. Lists (highlights, gallery captions) are merged by position, so keep the same order.
-- **Experience, services, skills:** `src/i18n/content/site.{fr,ar}.js`, merged by position.
+- **Services and skills:** `src/i18n/content/site.fr.js`, merged by position.
 - **Adding a language:** add it to `src/i18n/config.js`, create its dictionary and two content files, and
   register them in `get-dictionary.js` and `content.js`.
-- **Layout:** use logical utilities (`ms-`, `pe-`, `text-start`, `end-`) and `rtl:` variants, never `left`/`right`.
-  Brand names carry `lang="en"` so Arabic letter-spacing resets do not flatten their tight tracking.
-- **Not translated on purpose:** the name Mohamed Zrigou, product names, technology names, and the social share
-  images (their font has no Arabic glyphs).
+- **Not translated on purpose:** the name Mohamed Zrigou, product names and technology names.
 
 ## Project images
 

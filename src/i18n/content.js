@@ -1,12 +1,10 @@
 import { clientProjects, flagshipProjects, projects } from "@/data/projects";
-import { experience, services, skillGroups } from "@/data/site";
-import arProjects from "@/i18n/content/projects.ar";
+import { services, skillGroups } from "@/data/site";
 import frProjects from "@/i18n/content/projects.fr";
-import arSite from "@/i18n/content/site.ar";
 import frSite from "@/i18n/content/site.fr";
 
-const projectOverlays = { fr: frProjects, ar: arProjects };
-const siteOverlays = { fr: frSite, ar: arSite };
+const projectOverlays = { fr: frProjects };
+const siteOverlays = { fr: frSite };
 
 function mergeList(base, overlay) {
   return base?.map((item, index) => ({ ...item, ...overlay?.[index] }));
@@ -35,9 +33,8 @@ export const getClientProjects = (locale) => getProjects(locale).filter((project
 /** Experience, services and skill groups, translated by position. */
 export function getSiteContent(locale) {
   const overlay = siteOverlays[locale];
-  if (!overlay) return { experience, services, skillGroups };
+  if (!overlay) return { services, skillGroups };
   return {
-    experience: mergeList(experience, overlay.experience),
     services: mergeList(services, overlay.services),
     skillGroups: mergeList(skillGroups, overlay.skillGroups),
   };

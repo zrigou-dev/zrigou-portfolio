@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
-import { Bricolage_Grotesque, Cairo, Geist, Geist_Mono, IBM_Plex_Sans_Arabic } from "next/font/google";
+import { Bricolage_Grotesque, Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
+import Effects from "@/components/Effects";
 import JsonLd from "@/components/JsonLd";
 import Providers from "@/components/Providers";
 import RevealObserver from "@/components/RevealObserver";
@@ -11,23 +12,15 @@ import { alternatesFor } from "@/i18n/seo";
 import { personSchema, websiteSchema } from "@/lib/schema";
 import "../globals.css";
 
+// Runs before first paint so the page never flashes the wrong theme. Dark is the default.
+// React warns when it has to create an executable <script> on the client, which would happen if this layout were
+// remounted by a client-side navigation. The language switcher therefore uses real page loads (see LanguageSwitcher),
+// so this script only ever arrives in server-rendered HTML.
+const themeScript = `try{var t=localStorage.getItem("theme");document.documentElement.classList.toggle("dark",t!=="light")}catch(e){document.documentElement.classList.add("dark")}`;
+
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"], preload: false });
 const bricolage = Bricolage_Grotesque({ variable: "--font-bricolage", subsets: ["latin"] });
-
-// Arabic faces. Only the Arabic page puts their variables on <html>, so English and French never download them.
-const arabicSans = IBM_Plex_Sans_Arabic({
-  variable: "--font-ar-sans",
-  subsets: ["arabic"],
-  weight: ["400", "500", "600", "700"],
-  preload: false,
-});
-const arabicDisplay = Cairo({
-  variable: "--font-ar-display",
-  subsets: ["arabic"],
-  weight: ["600", "700", "800"],
-  preload: false,
-});
 
 export const dynamicParams = false;
 
@@ -80,11 +73,11 @@ export default async function LocaleLayout({ children, params }) {
 
   const t = getDictionary(locale);
   const fonts = [geistSans.variable, geistMono.variable, bricolage.variable];
-  if (locale === "ar") fonts.push(arabicSans.variable, arabicDisplay.variable);
 
   return (
-    <html lang={locale} dir={localeMeta[locale].dir} suppressHydrationWarning className={fonts.join(" ")}>
+    <html lang={locale} dir={localeMeta[locale].dir} data-scroll-behavior="smooth" suppressHydrationWarning className={fonts.join(" ")}>
       <body>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:start-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-accent-fill focus:px-5 focus:py-3 focus:font-semibold focus:text-on-accent"
@@ -96,6 +89,7 @@ export default async function LocaleLayout({ children, params }) {
           {children}
         </Providers>
         <RevealObserver />
+        <Effects />
         <Analytics />
       </body>
     </html>

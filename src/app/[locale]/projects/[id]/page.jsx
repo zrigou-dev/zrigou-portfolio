@@ -5,6 +5,8 @@ import { BrowserFrame, PanelFrame, PhoneFrame } from "@/components/Devices";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import JsonLd from "@/components/JsonLd";
+import { SplitWords } from "@/components/Split";
+import StickyCta from "@/components/StickyCta";
 import { projects as baseProjects } from "@/data/projects";
 import { site } from "@/data/site";
 import { isLocale, localeMeta, localizePath, locales } from "@/i18n/config";
@@ -78,13 +80,13 @@ function ProjectLinks({ project, t }) {
   return (
     <div className="flex flex-wrap items-center gap-2.5 md:gap-3">
       {project.download && (
-        <a href={project.download.url} download className="btn btn-light w-full sm:w-auto">
+        <a href={project.download.url} download data-magnetic className="btn btn-light w-full sm:w-auto">
           <FiDownload aria-hidden="true" /> {project.download.label}
           <span className="font-normal opacity-70">{project.download.detail}</span>
         </a>
       )}
       {project.url && (
-        <a href={project.url} target="_blank" rel="noopener noreferrer" className="btn btn-light flex-1 sm:flex-none">
+        <a href={project.url} target="_blank" rel="noopener noreferrer" data-magnetic className="btn btn-light flex-1 sm:flex-none">
           {project.urlLabel} <FiArrowUpRight className="rtl:-scale-x-100" aria-hidden="true" />
         </a>
       )}
@@ -114,6 +116,7 @@ function Gallery({ project, t }) {
   const Frame = project.gallery[0].kind === "phone" ? PhoneFrame : PanelFrame;
   return (
     <div
+      data-stagger
       tabIndex={0}
       role="region"
       aria-label={fmt(t.project.screens, { title: project.title })}
@@ -171,7 +174,7 @@ export default async function ProjectDetails({ params }) {
               {project.title}
             </h1>
             <p className="mt-4 max-w-3xl text-pretty text-lg leading-relaxed text-white/90 md:mt-5 md:text-2xl">{project.tagline}</p>
-            <div className="mt-7 md:mt-8">
+            <div id="project-links" className="mt-7 md:mt-8">
               <ProjectLinks project={project} t={t} />
               {project.download && <p className="mt-3.5 max-w-md text-[0.8125rem] leading-relaxed text-white/75 md:mt-4 md:text-sm">{t.project.androidNote}</p>}
             </div>
@@ -204,7 +207,7 @@ export default async function ProjectDetails({ params }) {
               {project.technologies && (
                 <>
                   <h2 className="eyebrow mb-3 mt-8 md:mt-10">{t.project.builtWith}</h2>
-                  <ul className="flex flex-wrap gap-1.5 md:gap-2">
+                  <ul data-stagger className="flex flex-wrap gap-1.5 md:gap-2">
                     {project.technologies.map((technology) => (
                       <li key={technology} className="tag">
                         {technology}
@@ -220,10 +223,10 @@ export default async function ProjectDetails({ params }) {
         {project.highlights && (
           <section className="section-y-sm border-t border-line">
             <div className="shell">
-              <h2 data-reveal className="section-title mb-8 md:mb-14">{t.project.whatItDoes}</h2>
-              <ol className="grid gap-px overflow-hidden rounded-2xl border border-line bg-line md:grid-cols-2 md:rounded-3xl lg:grid-cols-3">
+              <h2 data-words className="section-title mb-8 md:mb-14"><SplitWords text={t.project.whatItDoes} /></h2>
+              <ol data-stagger className="grid gap-px overflow-hidden rounded-2xl border border-line bg-line md:grid-cols-2 md:rounded-3xl lg:grid-cols-3">
                 {project.highlights.map((item, position) => (
-                  <li key={item.title} className="bg-bg p-5 md:p-7">
+                  <li key={item.title} data-spotlight className="bg-bg p-5 md:p-7">
                     <p className="font-mono text-xs text-muted">0{position + 1}</p>
                     <h3 className="mt-4 font-display text-xl font-semibold tracking-tight md:mt-6 md:text-2xl">{item.title}</h3>
                     <p className="mt-2 text-pretty text-[0.95rem] leading-relaxed text-ink-soft md:text-base">{item.text}</p>
@@ -237,7 +240,7 @@ export default async function ProjectDetails({ params }) {
         {project.gallery && (
           <section className="section-y-sm overflow-hidden border-t border-line">
             <div className="shell">
-              <h2 data-reveal className="section-title mb-8 md:mb-14">{t.project.inside}</h2>
+              <h2 data-words className="section-title mb-8 md:mb-14"><SplitWords text={t.project.inside} /></h2>
               <Gallery project={project} t={t} />
             </div>
           </section>
@@ -247,11 +250,11 @@ export default async function ProjectDetails({ params }) {
           <section className="section-y-sm border-t border-line">
             <div className="shell grid gap-8 lg:grid-cols-12 lg:gap-10">
               <div className="lg:col-span-4">
-                <h2 data-reveal className="section-title lg:sticky lg:top-28">{t.project.howBuilt}</h2>
+                <h2 data-words className="section-title lg:sticky lg:top-28"><SplitWords text={t.project.howBuilt} /></h2>
               </div>
-              <ul className="border-t border-line lg:col-span-8">
+              <ul data-stagger className="border-t border-line lg:col-span-8">
                 {project.engineering.map((item) => (
-                  <li key={item.title} data-reveal className="border-b border-line py-5 md:py-6">
+                  <li key={item.title} className="border-b border-line py-5 md:py-6">
                     <h3 className="font-display text-xl font-semibold tracking-tight md:text-2xl">{item.title}</h3>
                     <p className="mt-2 max-w-2xl text-pretty text-[0.95rem] leading-relaxed text-ink-soft md:text-base">{item.text}</p>
                   </li>
@@ -277,6 +280,15 @@ export default async function ProjectDetails({ params }) {
         </section>
       </main>
       <Footer locale={locale} t={t} />
+      {(project.download || project.url) && (
+        <StickyCta
+          targetId="project-links"
+          href={project.download ? project.download.url : project.url}
+          label={project.download ? project.download.label : project.urlLabel}
+          detail={project.download?.detail}
+          download={Boolean(project.download)}
+        />
+      )}
     </>
   );
 }

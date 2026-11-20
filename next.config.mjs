@@ -43,6 +43,13 @@ const nextConfig = {
       fallback: [{ source: "/:path*", destination: "/en/:path*" }],
     };
   },
+  // Arabic was removed: send any old /ar link to the English page instead of a 404.
+  async redirects() {
+    return [
+      { source: "/ar", destination: "/", permanent: false },
+      { source: "/ar/:path*", destination: "/:path*", permanent: false },
+    ];
+  },
   async headers() {
     // Next's dev server needs eval, so the CSP only applies to production builds.
     const headers =

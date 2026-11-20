@@ -1,22 +1,4 @@
 const site = {
-  experience: [
-    {
-      role: "Développeur mobile et web",
-      period: "2023 – Aujourd'hui",
-      points: [
-        "Développe des applications mobiles et web multiplateformes avec React Native et Next.js pour des clients internationaux.",
-        "Intègre des API REST aux services back-end et conteneurise les environnements de développement avec Docker.",
-      ],
-    },
-    {
-      role: "Développeur mobile et web",
-      period: "2021 – 2023",
-      points: [
-        "Développement d'applications mobiles et web responsives avec React Native et Next.js.",
-        "Amélioration de l'UX/UI et des performances de plusieurs produits clients.",
-      ],
-    },
-  ],
   services: [
     {
       title: "Applications web",

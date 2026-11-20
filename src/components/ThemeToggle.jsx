@@ -1,16 +1,12 @@
 "use client";
-import { useTheme } from "next-themes";
-import { useSyncExternalStore } from "react";
+import { useTheme } from "@/components/useTheme";
 import { FiMoon, FiSun } from "react-icons/fi";
 import { useI18n } from "@/i18n/I18nProvider";
 
-const subscribe = () => () => {};
-
 export default function ThemeToggle({ className = "" }) {
   const { t } = useI18n();
-  const { resolvedTheme, setTheme } = useTheme();
-  const mounted = useSyncExternalStore(subscribe, () => true, () => false);
-  const isDark = !mounted || resolvedTheme === "dark";
+  const { theme, setTheme } = useTheme();
+  const isDark = theme === "dark";
 
   return (
     <button

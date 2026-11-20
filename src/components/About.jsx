@@ -1,50 +1,45 @@
-export default function About({ t, experience }) {
+import { site } from "@/data/site";
+import { FiDownload, FiMail } from "react-icons/fi";
+
+export default function About({ t }) {
   const words = t.about.statement.split(" ");
 
   return (
     <section id="about" className="border-t border-line section-y">
-      <div className="shell">
-        <p className="eyebrow mb-5 md:mb-8">{t.about.eyebrow}</p>
-        <p className="statement font-display text-[clamp(1.5rem,1rem+2.6vw,3.25rem)] font-semibold leading-[1.18] tracking-[-0.02em]">
-          {words.map((word, index) => (
-            <span key={`${word}-${index}`} className="reveal-word" style={{ "--p": index / words.length }}>
-              {word}{" "}
-            </span>
-          ))}
-        </p>
-
-        <div className="mt-12 grid gap-12 md:mt-20 lg:grid-cols-12">
-          <div data-reveal className="lg:col-span-12">
-            <h3 className="eyebrow mb-3 md:mb-4">{t.about.experience}</h3>
-            <ol className="border-t border-line">
-              {experience.map((job) => (
-                <li key={job.company} className="grid gap-2 border-b border-line py-5 sm:grid-cols-[10rem_1fr] sm:gap-6 sm:py-6">
-                  <p className="font-mono text-xs text-muted sm:text-sm">{job.period}</p>
-                  <div>
-                    <p lang="en" className="font-display text-xl font-semibold tracking-tight md:text-2xl">{job.company}</p>
-                    <p className="mt-0.5 text-sm text-muted">{job.role}</p>
-                    <ul className="mt-3 max-w-3xl space-y-1.5 text-[0.95rem] leading-relaxed text-ink-soft md:text-base">
-                      {job.points.map((point) => (
-                        <li key={point}>{point}</li>
-                      ))}
-                    </ul>
-                  </div>
-                </li>
-              ))}
-              <li className="grid gap-2 border-b border-line py-5 sm:grid-cols-[10rem_1fr] sm:gap-6 sm:py-6">
-                <p className="font-mono text-xs text-muted sm:text-sm">{t.about.founderLabel}</p>
-                <div>
-                  <p lang="en" className="font-display text-xl font-semibold tracking-tight md:text-2xl">{t.about.founderCompany}</p>
-                  <p className="mt-0.5 text-sm text-muted">{t.about.founderRole}</p>
-                  <p className="mt-3 max-w-3xl text-[0.95rem] leading-relaxed text-ink-soft md:text-base">
-                    {t.about.founderText}
-                  </p>
-                </div>
-              </li>
-            </ol>
-          </div>
-
+      <div className="shell grid gap-10 lg:grid-cols-12 lg:gap-14">
+        <div className="lg:col-span-7">
+          <p className="eyebrow mb-5 md:mb-8">{t.about.eyebrow}</p>
+          <p className="statement font-display text-[clamp(1.5rem,1rem+2vw,2.75rem)] font-semibold leading-[1.2] tracking-[-0.02em]">
+            {words.map((word, index) => (
+              <span key={`${word}-${index}`} className="reveal-word" style={{ "--p": index / words.length }}>
+                {word}{" "}
+              </span>
+            ))}
+          </p>
         </div>
+
+        {/* The thirty-second read: everything a recruiter needs before deciding to look closer. */}
+        <aside data-reveal className="lg:col-span-5 lg:self-start">
+          <div data-spotlight className="overflow-hidden rounded-2xl border border-line bg-surface/60 p-5 md:p-7 lg:sticky lg:top-28">
+            <h3 className="eyebrow mb-3 md:mb-4">{t.about.glanceTitle}</h3>
+            <dl className="divide-y divide-line">
+              {t.about.glance.map((row) => (
+                <div key={row.label} className="grid gap-0.5 py-3 sm:grid-cols-[7.5rem_1fr] sm:gap-4">
+                  <dt className="text-[0.8125rem] text-muted md:text-sm">{row.label}</dt>
+                  <dd className="text-[0.95rem] leading-snug">{row.value}</dd>
+                </div>
+              ))}
+            </dl>
+            <div className="mt-5 flex flex-wrap gap-2.5 md:mt-6">
+              <a href={site.cv} download={site.cvFilename} data-magnetic className="btn btn-primary flex-1 sm:flex-none">
+                <FiDownload aria-hidden="true" /> {t.common.downloadCv}
+              </a>
+              <a href={`mailto:${site.email}`} className="btn btn-ghost flex-1 sm:flex-none">
+                <FiMail aria-hidden="true" /> {t.about.emailMe}
+              </a>
+            </div>
+          </div>
+        </aside>
       </div>
     </section>
   );

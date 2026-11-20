@@ -1,6 +1,8 @@
 import { FaGithub, FaLinkedinIn, FaWhatsapp } from "react-icons/fa6";
 import { FiArrowUpRight, FiPhone } from "react-icons/fi";
 import CopyEmail from "@/components/CopyEmail";
+import { SplitWords } from "@/components/Split";
+import { FiDownload } from "react-icons/fi";
 import { site } from "@/data/site";
 
 export default function Contact({ t }) {
@@ -12,25 +14,28 @@ export default function Contact({ t }) {
   ];
 
   return (
-    <section id="contact" className="border-t border-line section-y">
+    <section id="contact" className="border-t border-line section-y pb-12 md:pb-16">
       <div className="shell">
         <p className="eyebrow mb-4 md:mb-6">{t.contact.eyebrow}</p>
-        <h2 data-reveal className="font-display text-[clamp(2.5rem,1rem+8vw,7.5rem)] font-extrabold leading-[0.98] tracking-[-0.03em]">
-          {t.contact.title1} <span className="block text-accent">{t.contact.title2}</span>
+        <h2 data-words className="font-display text-[clamp(2.5rem,1rem+8vw,7.5rem)] font-extrabold leading-[0.98] tracking-[-0.03em]">
+          <SplitWords text={t.contact.title1} /> <span className="block text-accent"><SplitWords text={t.contact.title2} start={4} /></span>
         </h2>
 
         <div className="mt-8 grid gap-8 md:mt-12 md:gap-10 lg:grid-cols-12">
           <div data-reveal className="lg:col-span-6">
             <p className="lead max-w-lg">{t.contact.text}</p>
             <div className="mt-5 flex items-center gap-2.5 md:mt-6 md:gap-3">
-              <a href={`mailto:${site.email}`} className="btn btn-primary min-w-0 flex-1 sm:flex-none">
+              <a href={`mailto:${site.email}`} data-magnetic className="btn btn-primary min-w-0 flex-1 sm:flex-none">
                 <span dir="ltr" className="truncate">{site.email}</span>
               </a>
               <CopyEmail />
             </div>
+            <a href={site.cv} download={site.cvFilename} className="btn btn-ghost mt-3 w-full sm:w-auto">
+              <FiDownload aria-hidden="true" /> {t.common.downloadCv}
+            </a>
           </div>
 
-          <ul data-reveal style={{ "--d": 2 }} className="border-t border-line lg:col-span-5 lg:col-start-8">
+          <ul data-stagger className="border-t border-line lg:col-span-5 lg:col-start-8">
             {channels.map(({ label, detail, href, Icon, external }) => (
               <li key={label} className="border-b border-line">
                 <a

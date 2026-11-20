@@ -1,10 +1,11 @@
 "use client";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { localeMeta, localizePath, locales, stripLocale } from "@/i18n/config";
 import { useI18n } from "@/i18n/I18nProvider";
 
-// Links, not buttons: each language is a real URL, so it can be shared, bookmarked and crawled.
+// Plain anchors, not next/link: each language is a real URL that can be shared, bookmarked and crawled, and a full page
+// load hands the browser a fresh document with the right lang, direction and fonts. A client-side swap would remount
+// the root layout, which makes React 19 re-create its inline theme script and log a warning.
 export default function LanguageSwitcher({ className = "" }) {
   const { locale, t } = useI18n();
   const pathname = stripLocale(usePathname());
@@ -14,19 +15,18 @@ export default function LanguageSwitcher({ className = "" }) {
       {locales.map((code) => {
         const active = code === locale;
         return (
-          <Link
+          <a
             key={code}
             href={localizePath(code, pathname)}
             lang={code}
             hrefLang={code}
             aria-current={active ? "true" : undefined}
-            scroll={false}
             className={`grid h-8 min-w-8 place-items-center rounded-full px-2 text-[0.6875rem] font-semibold leading-none transition-colors sm:h-9 sm:min-w-9 sm:text-xs ${
               active ? "bg-accent-fill text-on-accent" : "text-muted hover:text-ink"
             }`}
           >
             {localeMeta[code].short}
-          </Link>
+          </a>
         );
       })}
     </nav>

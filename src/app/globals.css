@@ -21,14 +21,6 @@
   --font-code: var(--font-geist-mono);
 }
 
-/* Arabic swaps the three font roles. The Arabic faces carry only Arabic glyphs, so Latin names and
-   code inside Arabic text fall through to the Latin faces automatically. */
-:root:lang(ar) {
-  --font-body: var(--font-ar-sans), var(--font-geist-sans);
-  --font-head: var(--font-ar-display), var(--font-bricolage);
-  --font-code: var(--font-geist-mono), var(--font-ar-sans);
-}
-
 .dark {
   --bg: #0b0c10;
   --surface: #13151b;
@@ -239,12 +231,12 @@
   }
 
   /* Stacked flagship projects: each card pins and the next slides over it. */
-  .flagship-card {
+  .flagship-slot {
     --n: 0;
   }
 
   @media (min-width: 1024px) and (min-height: 760px) {
-    .flagship-card {
+    .flagship-slot {
       position: sticky;
       top: calc(5.5rem + var(--n) * 1rem);
     }
@@ -273,37 +265,6 @@
   .reveal-word {
     color: var(--ink);
   }
-}
-
-/* Set in CSS because it is pure decoration, not text for readers or crawlers.
-   Its glyphs are taller than its line box and reach over the footer links, so it must never take clicks. */
-.footer-wordmark {
-  pointer-events: none;
-}
-
-.footer-wordmark::before {
-  content: "Zrigou";
-  display: block;
-  margin-top: 1.5rem;
-  color: var(--surface-2);
-  font-family: var(--font-head);
-  font-size: 30vw;
-  font-weight: 800;
-  line-height: 0.72;
-  letter-spacing: -0.02em;
-  text-align: center;
-  white-space: nowrap;
-  user-select: none;
-}
-
-/* Mobile menu sheet */
-.menu-sheet[open] {
-  animation: sheet-in 0.45s var(--ease-out-expo) both;
-}
-
-.menu-sheet[open] .menu-item {
-  animation: fade-up 0.6s var(--ease-out-expo) both;
-  animation-delay: calc(80ms + var(--i, 0) * 45ms);
 }
 
 /* Hero entrance */
@@ -475,47 +436,315 @@
   }
 }
 
-/* ---------- Right-to-left and Arabic ----------
-   Unlayered on purpose: these beat the utility classes without needing !important. */
-html:lang(ar) {
-  font-size: 106.25%;
+/* ---------- Motion system ----------
+   Everything that hides content until it animates is gated on scripting + no reduced-motion preference,
+   so crawlers, no-JS readers and anyone who asked for less motion simply see the finished page. */
+
+.page-enter {
+  animation: page-in 0.5s ease both;
 }
 
-/* Arabic letters join, so any letter-spacing breaks the word. Elements marked lang="en" (brand names) keep theirs. */
-*:lang(ar) {
-  letter-spacing: 0;
+/* Hero: letters rise out of a mask, a rotating role line, and a slow aurora behind the name. */
+.hero-line > .hero-static {
+  animation: none;
 }
 
-.eyebrow:lang(ar),
-.tag:lang(ar) {
-  text-transform: none;
-  font-family: var(--font-body);
-  font-size: 0.8125rem;
-  font-weight: 500;
+.char {
+  display: inline-block;
+  animation: char-rise 0.95s var(--ease-out-expo) both;
+  animation-delay: calc(var(--ci, 0) * 45ms + 150ms);
 }
 
-.tag:lang(ar) {
-  font-size: 0.75rem;
+.role-window {
+  display: inline-block;
+  height: 1.3em;
+  overflow: hidden;
+  line-height: 1.3;
+  vertical-align: bottom;
 }
 
-/* Arabic ascenders and diacritics need room that the tight Latin display leading does not give. */
-h1:lang(ar),
-h2:lang(ar),
-h3:lang(ar),
-.section-title:lang(ar),
-.statement:lang(ar) {
-  line-height: 1.32;
+.role-track {
+  display: block;
+  transition: transform 0.7s var(--ease-out-expo);
 }
 
-.lead:lang(ar),
-p:lang(ar) {
-  line-height: 1.8;
+.role-item {
+  display: block;
+  height: 1.3em;
+  line-height: 1.3;
+  white-space: nowrap;
+  color: var(--accent);
 }
 
-[dir="rtl"] .scroll-progress {
-  transform-origin: right;
+.aurora span {
+  position: absolute;
+  border-radius: 50%;
+  animation: drift 24s ease-in-out infinite alternate;
 }
 
-[dir="rtl"] .menu-sheet[open] {
-  animation-name: sheet-in;
+.aurora span:nth-child(1) {
+  width: 52vmax;
+  height: 52vmax;
+  inset-inline-start: -16vmax;
+  top: -14vmax;
+  opacity: 0.34;
+  background: radial-gradient(circle, var(--zellige), transparent 66%);
+}
+
+.aurora span:nth-child(2) {
+  width: 44vmax;
+  height: 44vmax;
+  inset-inline-end: -14vmax;
+  top: 6vh;
+  opacity: 0.24;
+  background: radial-gradient(circle, var(--accent-fill), transparent 66%);
+  animation-duration: 30s;
+  animation-delay: -8s;
+}
+
+.aurora span:nth-child(3) {
+  width: 30vmax;
+  height: 30vmax;
+  inset-inline-start: 24vw;
+  bottom: -10vmax;
+  opacity: 0.2;
+  background: radial-gradient(circle, var(--zellige), transparent 66%);
+  animation-duration: 36s;
+  animation-delay: -14s;
+}
+
+:root:not(.dark) .aurora span {
+  opacity: 0.16;
+}
+
+/* Headings: each word rises out of its own mask when the heading scrolls into view. */
+.w {
+  display: inline-block;
+  overflow: hidden;
+  padding-block: 0.14em;
+  margin-block: -0.14em;
+  vertical-align: bottom;
+}
+
+.w > span {
+  display: inline-block;
+}
+
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  [data-words] .w > span {
+    transition: transform 1.05s var(--ease-out-expo);
+    transition-delay: calc(var(--wi, 0) * 70ms);
+  }
+
+  [data-words]:not(.is-in) .w > span {
+    transform: translate3d(0, 118%, 0);
+    animation: word-fallback 0.01s linear 4s forwards;
+  }
+
+  /* Groups of siblings arrive one after another. */
+  [data-stagger]:not(.is-in) > * {
+    opacity: 0;
+    animation: reveal-fallback 0.4s linear 4s forwards;
+  }
+
+  [data-stagger].is-in > * {
+    animation: stagger-in 0.95s var(--ease-out-expo) both;
+    animation-delay: calc(var(--si, 0) * 75ms);
+  }
+}
+[data-stagger] > :nth-child(1) { --si: 0; }
+[data-stagger] > :nth-child(2) { --si: 1; }
+[data-stagger] > :nth-child(3) { --si: 2; }
+[data-stagger] > :nth-child(4) { --si: 3; }
+[data-stagger] > :nth-child(5) { --si: 4; }
+[data-stagger] > :nth-child(6) { --si: 5; }
+[data-stagger] > :nth-child(7) { --si: 6; }
+[data-stagger] > :nth-child(8) { --si: 7; }
+[data-stagger] > :nth-child(9) { --si: 8; }
+[data-stagger] > :nth-child(10) { --si: 9; }
+[data-stagger] > :nth-child(11) { --si: 10; }
+[data-stagger] > :nth-child(12) { --si: 11; }
+[data-stagger] > :nth-child(13) { --si: 12; }
+[data-stagger] > :nth-child(14) { --si: 13; }
+[data-stagger] > :nth-child(15) { --si: 14; }
+[data-stagger] > :nth-child(16) { --si: 15; }
+[data-stagger] > :nth-child(17) { --si: 16; }
+[data-stagger] > :nth-child(18) { --si: 17; }
+[data-stagger] > :nth-child(19) { --si: 18; }
+[data-stagger] > :nth-child(20) { --si: 19; }
+[data-stagger] > :nth-child(21) { --si: 20; }
+[data-stagger] > :nth-child(22) { --si: 21; }
+[data-stagger] > :nth-child(23) { --si: 22; }
+[data-stagger] > :nth-child(24) { --si: 23; }
+
+/* Cards: cursor spotlight, 3D tilt with a moving glare, and phones that drift. */
+[data-spotlight] {
+  position: relative;
+  isolation: isolate;
+}
+
+[data-spotlight]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+  background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), color-mix(in srgb, var(--accent-fill) 15%, transparent), transparent 62%);
+}
+
+[data-spotlight]:hover::before {
+  opacity: 1;
+}
+
+[data-tilt] {
+  position: relative;
+  transition: transform 0.8s var(--ease-out-expo);
+}
+
+[data-tilt].is-tilting {
+  transition: transform 0.12s linear;
+}
+
+[data-tilt]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+  background: radial-gradient(560px circle at var(--gx, 50%) var(--gy, 50%), rgb(255 255 255 / 0.15), transparent 56%);
+}
+
+[data-tilt].is-tilting::after {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .flagship-visual .device-phone,
+  .flagship-visual .device-panel {
+    animation: float-y 7s ease-in-out infinite;
+  }
+
+  .flagship-visual > :nth-child(2) {
+    animation-delay: -2.3s !important;
+  }
+
+  .flagship-visual > :nth-child(3) {
+    animation-delay: -4.6s !important;
+  }
+}
+
+/* Buttons: a light sweep on hover. */
+.btn-primary {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(110deg, transparent 35%, rgb(255 255 255 / 0.5) 50%, transparent 65%);
+  transform: translateX(-130%);
+}
+
+@media (hover: hover) {
+  .btn-primary:hover::after {
+    transform: translateX(130%);
+    transition: transform 0.9s var(--ease-out-expo);
+  }
+}
+
+/* Header tucks away while reading down the page and returns on the way back up. */
+.site-header {
+  transition: transform 0.55s var(--ease-out-expo);
+}
+
+.site-header.is-tucked {
+  transform: translate3d(0, -120%, 0);
+}
+
+/* Scroll-linked motion, where the browser supports it. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    /* Phone carousel: the card in the middle is full size, its neighbours recede. */
+    @media (max-width: 1023.98px) {
+      .flagship-slot {
+        animation: slot-focus linear both;
+        animation-timeline: view(inline);
+      }
+    }
+
+    /* Desktop: product visuals drift against the scroll for depth. */
+    @media (min-width: 1024px) {
+      .flagship-visual {
+        animation: visual-drift linear both;
+        animation-timeline: view();
+      }
+    }
+  }
+}
+
+@keyframes page-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes char-rise {
+  from {
+    transform: translate3d(0, 112%, 0) rotate(7deg);
+    opacity: 0;
+    filter: blur(10px);
+  }
+}
+
+@keyframes word-fallback {
+  to {
+    transform: none;
+  }
+}
+
+@keyframes stagger-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 30px, 0) scale(0.98);
+  }
+}
+
+@keyframes drift {
+  to {
+    transform: translate3d(7vmax, 5vmax, 0) scale(1.18);
+  }
+}
+
+@keyframes float-y {
+  50% {
+    translate: 0 -9px;
+  }
+}
+
+@keyframes slot-focus {
+  0%,
+  100% {
+    transform: scale(0.9);
+    opacity: 0.55;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes visual-drift {
+  from {
+    translate: 0 34px;
+  }
+  to {
+    translate: 0 -34px;
+  }
 }
