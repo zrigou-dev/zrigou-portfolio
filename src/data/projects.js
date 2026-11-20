@@ -67,6 +67,10 @@ export const projects = [
     imageAlt: "Masroufi home screen showing total money, account balances and quick add buttons",
     repo: "https://github.com/zrigou-dev/Masroufi",
     download: { url: "/downloads/masroufi.apk", label: "Download for Android", detail: "APK · 102 MB" },
+    heroShots: [
+      { src: `${dir}/masroufi/en-planning.webp`, alt: "Masroufi planning screen showing the amount available to spend" },
+      { src: `${dir}/masroufi/ar-home.webp`, alt: "Masroufi home screen in Arabic" },
+    ],
     technologies: ["React Native", "Expo", "TypeScript", "Expo Router", "SQLite", "Jest", "Playwright"],
     highlights: [
       { title: "Spend in one tap", text: "Quick buttons appear on their own from what you repeat, and every entry can be undone on the spot." },
@@ -90,6 +94,57 @@ export const projects = [
       { src: `${dir}/masroufi/en-budgets.webp`, alt: "Masroufi budgets screen tracking spending pace", caption: "Budget pace", kind: "phone", width: 640, height: 1385 },
       { src: `${dir}/masroufi/ar-reports.webp`, alt: "Masroufi reports screen in Arabic with a right-to-left layout", caption: "Arabic first", kind: "phone", width: 640, height: 1385 },
       { src: `${dir}/masroufi/en-dark-reports.webp`, alt: "Masroufi reports screen in dark mode", caption: "Dark mode", kind: "phone", width: 640, height: 1385 },
+    ],
+  },
+  {
+    id: "sakina",
+    title: "Sakina",
+    flagship: true,
+    tint: "#0e5a45",
+    tintDeep: "#0a1020",
+    category: "Mobile App",
+    role: "Designer & Developer",
+    platform: "Android, with iOS and web from one codebase",
+    tagline: "A peaceful, private Islamic companion that works fully offline.",
+    description:
+      "Sakina (سكينة) is an offline-first Islamic companion built with React Native and Expo: prayer times, Qibla, the full Quran, adhkar, tasbih and Zakat, in Arabic, English and French.",
+    summary:
+      "Sakina (سكينة) puts a Muslim's day in one calm place. Home shows today: the next prayer with a live countdown, the daily ayah, adhkar and goals. Everything else is one tap away: the full Quran with search and memorisation, adhkar and duas, a Misbaha tasbih, the Hijri calendar and a Zakat calculator.",
+    context:
+      "It is Arabic first with full right-to-left layout, and complete in English and French. There is no account, no analytics and no cloud: every core screen renders from data on the phone, and the network is used only for downloads you ask for.",
+    keyPoints: ["Fully offline, no account or tracking", "Arabic first, plus English and French", "Every text traced to a named source"],
+    image: `${dir}/sakina/home-en.webp`,
+    imageAlt: "Sakina home screen showing the next prayer with a live countdown, today's prayer times and the daily goals",
+    repo: "https://github.com/zrigou-dev/sakina",
+    download: { url: "/downloads/sakina.apk", label: "Download for Android", detail: "APK · 70 MB" },
+    heroShots: [
+      { src: `${dir}/sakina/prayer-ar.webp`, alt: "Sakina prayer times in Arabic with a right-to-left layout" },
+      { src: `${dir}/sakina/dark-prayer.webp`, alt: "Sakina prayer times in dark mode" },
+    ],
+    technologies: ["React Native", "Expo", "TypeScript", "Expo Router", "SQLite", "Reanimated", "Jest", "Playwright"],
+    highlights: [
+      { title: "Prayer times that need no network", text: "Calculated on the device from your location, with twelve calculation methods, the Asr rule you follow and a clear label when you adjust a time." },
+      { title: "The full Quran", text: "The complete Uthmani text with surah, juz and page navigation, bookmarks, a last-read marker, local Arabic search, per-ayah audio and downloadable translations." },
+      { title: "Qibla and the Hijri calendar", text: "A compass with calibration guidance, and an Umm al-Qura calendar with occasions, a fasting log and a manual day adjustment." },
+      { title: "Adhkar, duas and tasbih", text: "Morning and evening adhkar and Quranic duas with counters, plus a rotating 33-bead Misbaha with haptics and targets." },
+      { title: "Memorisation and a khatma plan", text: "Plans by surah, a spaced revision queue and progress you can read at a glance, with encouragement instead of streak pressure." },
+      { title: "Zakat, explained", text: "Cash, gold, silver, trade goods and debts, with the nisab method shown so you can see how the result was reached." },
+    ],
+    engineering: [
+      { title: "Offline-first, by construction", text: "Every core screen renders from on-device SQLite. Quran text, adhkar and hadith are bundled and seeded locally, and the network only ever serves a download you asked for." },
+      { title: "Religious text is verified, not improvised", text: "Content comes from documented sources and is re-hashed and checked by a validation script. Every source and its licence is listed in the app, and where no verified source exists the app says so." },
+      { title: "Right-to-left found at the root", text: "Android treats text alignment as logical inside an RTL paragraph, so forcing the right edge put Arabic on the left. Native text now only uses start, end and center, and a test fails the build if physical sides come back." },
+      { title: "An adhan engine that survives a closed app", text: "A local native module schedules alarms, plays the adhan from a foreground service and shows a full-screen stop screen, so it does not depend on the app being open." },
+      { title: "Private by design", text: "No backend, no analytics, no tracking. Location is used on the device for prayer times and Qibla and is never sent anywhere, and backups are exported by you." },
+      { title: "Tested against real SQL", text: "Unit and integration tests run on real SQLite, and Playwright journeys drive the web build in Arabic, English and French, in light and dark." },
+    ],
+    gallery: [
+      { src: `${dir}/sakina/prayer-ar.webp`, alt: "Sakina prayer times in Arabic with a countdown to the next prayer", caption: "Arabic first", kind: "phone", width: 640, height: 1385 },
+      { src: `${dir}/sakina/quran-ar.webp`, alt: "Sakina Quran reader showing Surah Ya-Sin", caption: "The Quran reader", kind: "phone", width: 640, height: 1385 },
+      { src: `${dir}/sakina/tasbih-ar.webp`, alt: "Sakina tasbih with a rotating 33-bead Misbaha", caption: "A Misbaha tasbih", kind: "phone", width: 640, height: 1385 },
+      { src: `${dir}/sakina/qibla-ar.webp`, alt: "Sakina Qibla compass pointing to the Kaaba", caption: "Qibla compass", kind: "phone", width: 640, height: 1385 },
+      { src: `${dir}/sakina/dark-prayer.webp`, alt: "Sakina prayer times in dark mode", caption: "Dark mode", kind: "phone", width: 640, height: 1385 },
+      { src: `${dir}/sakina/fr-dark-home.webp`, alt: "Sakina home screen in French and dark mode", caption: "Complete in French", kind: "phone", width: 640, height: 1385 },
     ],
   },
   {

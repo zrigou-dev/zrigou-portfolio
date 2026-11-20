@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaHandRock, FaHandPaper, FaHandScissors } from "react-icons/fa";
+import { useI18n } from "@/i18n/I18nProvider";
 
 const CHOICES = [
   { id: "rock", name: "Rock", icon: <FaHandRock className="text-4xl" /> },
@@ -17,6 +18,8 @@ const WIN_MAP = {
 };
 
 export default function RockPaperScissors() {
+  const { t } = useI18n();
+  const g = t.games.rps;
   const [playerChoice, setPlayerChoice] = useState(null);
   const [computerChoice, setComputerChoice] = useState(null);
   const [result, setResult] = useState(null);
@@ -62,20 +65,20 @@ export default function RockPaperScissors() {
   return (
     <div className="bg-surface p-6 sm:p-8 rounded-2xl shadow-xl border border-line flex flex-col items-center w-full max-w-sm mx-auto">
       <h2 className="text-3xl font-bold text-ink mb-6 font-mono text-center">
-        RPC BATTLE
+        {g.title}
       </h2>
 
       {/* Scoreboard */}
       <div className="flex justify-between w-full mb-8 bg-bg p-4 rounded-xl border border-line">
         <div className="text-center">
-          <div className="text-muted text-xs font-bold uppercase tracking-wider mb-1">Player</div>
+          <div className="text-muted text-xs font-bold uppercase tracking-wider mb-1">{g.player}</div>
           <div className="text-3xl font-bold text-zellige">{score.player}</div>
         </div>
         <div className="text-center flex items-center justify-center font-bold text-muted text-xl px-4">
-          VS
+          {g.vs}
         </div>
         <div className="text-center">
-          <div className="text-muted text-xs font-bold uppercase tracking-wider mb-1">Computer</div>
+          <div className="text-muted text-xs font-bold uppercase tracking-wider mb-1">{g.computer}</div>
           <div className="text-3xl font-bold text-red-600 dark:text-red-400">{score.computer}</div>
         </div>
       </div>
@@ -117,7 +120,7 @@ export default function RockPaperScissors() {
                 exit={{ opacity: 0 }}
                 className={`text-2xl font-bold ${getResultColor()} uppercase tracking-widest bg-surface px-2`}
               >
-                {result}
+                {g[result]}
               </motion.div>
             )}
           </AnimatePresence>
@@ -154,7 +157,7 @@ export default function RockPaperScissors() {
       {/* Controls */}
       <div className="w-full">
         <p className="text-center text-muted text-sm mb-4 font-medium uppercase tracking-wider">
-          Choose your weapon
+          {g.choose}
         </p>
         <div className="flex justify-center gap-4">
           {CHOICES.map((choice) => (
@@ -168,6 +171,7 @@ export default function RockPaperScissors() {
                 isPlaying ? "bg-surface-2 cursor-not-allowed opacity-50" : "bg-surface-2 hover:bg-accent-fill hover:text-on-accent"
               }`}
             >
+              <span className="sr-only">{g[choice.id]}</span>
               {choice.icon}
             </motion.button>
           ))}
@@ -179,7 +183,7 @@ export default function RockPaperScissors() {
           onClick={() => setScore({ player: 0, computer: 0 })}
           className="mt-8 text-xs text-muted hover:text-ink underline transition"
         >
-          Reset Scores
+          {g.reset}
         </button>
       ) : null}
     </div>

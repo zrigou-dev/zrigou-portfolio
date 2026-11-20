@@ -16,6 +16,17 @@
   --on-accent: #16171b;
   --zellige: #0b7a6b;
   --dim: #85827a;
+  --font-body: var(--font-geist-sans);
+  --font-head: var(--font-bricolage);
+  --font-code: var(--font-geist-mono);
+}
+
+/* Arabic swaps the three font roles. The Arabic faces carry only Arabic glyphs, so Latin names and
+   code inside Arabic text fall through to the Latin faces automatically. */
+:root:lang(ar) {
+  --font-body: var(--font-ar-sans), var(--font-geist-sans);
+  --font-head: var(--font-ar-display), var(--font-bricolage);
+  --font-code: var(--font-geist-mono), var(--font-ar-sans);
 }
 
 .dark {
@@ -47,9 +58,9 @@
   --color-accent-fill: var(--accent-fill);
   --color-on-accent: var(--on-accent);
   --color-zellige: var(--zellige);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-display: var(--font-bricolage);
+  --font-sans: var(--font-body);
+  --font-mono: var(--font-code);
+  --font-display: var(--font-head);
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -58,13 +69,21 @@
     scroll-behavior: smooth;
     scroll-padding-top: 6rem;
     -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html:has(dialog[open]) {
+    overflow: hidden;
   }
 
   body {
     background: var(--bg);
     color: var(--ink);
-    font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+    font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
     overflow-x: clip;
+    font-size: 1rem;
+    line-height: 1.6;
+    text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
   }
 
@@ -94,20 +113,38 @@
     padding-inline: clamp(1.25rem, 4vw, 3.5rem);
   }
 
+  /* One vertical rhythm for every section. */
+  .section-y {
+    padding-block: clamp(3.5rem, 2rem + 6.5vw, 7.5rem);
+  }
+
+  .section-y-sm {
+    padding-block: clamp(3rem, 1.75rem + 5vw, 6rem);
+  }
+
+  /* Short supporting copy under a heading. */
+  .lead {
+    font-size: clamp(1rem, 0.95rem + 0.3vw, 1.2rem);
+    line-height: 1.65;
+    color: var(--ink-soft);
+    text-wrap: pretty;
+  }
+
   .eyebrow {
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    letter-spacing: 0.08em;
+    font-family: var(--font-code);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--muted);
   }
 
   .section-title {
-    font-family: var(--font-display);
+    font-family: var(--font-head);
     font-weight: 700;
-    font-size: clamp(2.5rem, 7vw, 5.5rem);
-    line-height: 1;
-    letter-spacing: -0.02em;
+    font-size: clamp(2rem, 1.25rem + 3.6vw, 4.25rem);
+    line-height: 1.04;
+    letter-spacing: -0.028em;
     text-wrap: balance;
   }
 
@@ -115,17 +152,29 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0.6rem;
-    min-height: 3rem;
-    padding: 0.75rem 1.4rem;
+    gap: 0.5rem;
+    min-height: 2.875rem;
+    padding: 0.6rem 1.25rem;
     border-radius: 999px;
     font-weight: 600;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
+    line-height: 1.2;
+    white-space: nowrap;
     transition: transform 0.3s var(--ease-out-expo), background-color 0.2s, border-color 0.2s, color 0.2s;
   }
 
-  .btn:hover {
-    transform: translateY(-2px);
+  @media (min-width: 768px) {
+    .btn {
+      min-height: 3rem;
+      padding-inline: 1.4rem;
+      font-size: 0.95rem;
+    }
+  }
+
+  @media (hover: hover) {
+    .btn:hover {
+      transform: translateY(-2px);
+    }
   }
 
   .btn:active {
@@ -167,11 +216,12 @@
   .tag {
     display: inline-flex;
     align-items: center;
-    padding: 0.3rem 0.7rem;
+    padding: 0.25rem 0.625rem;
     border: 1px solid var(--line);
     border-radius: 999px;
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: 0.6875rem;
+    line-height: 1.4;
     color: var(--ink-soft);
     white-space: nowrap;
   }
@@ -236,14 +286,24 @@
   display: block;
   margin-top: 1.5rem;
   color: var(--surface-2);
-  font-family: var(--font-display);
-  font-size: 32.5vw;
+  font-family: var(--font-head);
+  font-size: 30vw;
   font-weight: 800;
   line-height: 0.72;
   letter-spacing: -0.02em;
   text-align: center;
   white-space: nowrap;
   user-select: none;
+}
+
+/* Mobile menu sheet */
+.menu-sheet[open] {
+  animation: sheet-in 0.45s var(--ease-out-expo) both;
+}
+
+.menu-sheet[open] .menu-item {
+  animation: fade-up 0.6s var(--ease-out-expo) both;
+  animation-delay: calc(80ms + var(--i, 0) * 45ms);
 }
 
 /* Hero entrance */
@@ -340,6 +400,13 @@
   }
 }
 
+@keyframes sheet-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -14px, 0);
+  }
+}
+
 @keyframes fade-up {
   from {
     opacity: 0;
@@ -406,4 +473,49 @@
   .marquee-track {
     animation: none;
   }
+}
+
+/* ---------- Right-to-left and Arabic ----------
+   Unlayered on purpose: these beat the utility classes without needing !important. */
+html:lang(ar) {
+  font-size: 106.25%;
+}
+
+/* Arabic letters join, so any letter-spacing breaks the word. Elements marked lang="en" (brand names) keep theirs. */
+*:lang(ar) {
+  letter-spacing: 0;
+}
+
+.eyebrow:lang(ar),
+.tag:lang(ar) {
+  text-transform: none;
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.tag:lang(ar) {
+  font-size: 0.75rem;
+}
+
+/* Arabic ascenders and diacritics need room that the tight Latin display leading does not give. */
+h1:lang(ar),
+h2:lang(ar),
+h3:lang(ar),
+.section-title:lang(ar),
+.statement:lang(ar) {
+  line-height: 1.32;
+}
+
+.lead:lang(ar),
+p:lang(ar) {
+  line-height: 1.8;
+}
+
+[dir="rtl"] .scroll-progress {
+  transform-origin: right;
+}
+
+[dir="rtl"] .menu-sheet[open] {
+  animation-name: sheet-in;
 }

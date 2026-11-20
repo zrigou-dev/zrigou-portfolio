@@ -96,7 +96,7 @@ export const skillGroups = [
   {
     title: "Mobile",
     skills: ["React Native", "Expo", "Expo Router", "Push notifications", "Local SQLite", "Biometrics"],
-    proof: "Masroufi",
+    proof: "Masroufi, Sakina",
   },
   {
     title: "Back-end & APIs",

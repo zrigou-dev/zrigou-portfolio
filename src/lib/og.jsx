@@ -64,7 +64,7 @@ export async function siteOgImage() {
 export async function projectOgImage(project) {
   const image = await readAsset(`${project.id}.jpg`);
   const src = `data:image/jpeg;base64,${image.toString("base64")}`;
-  const isTall = project.id === "masroufi" || project.id === "inspectra";
+  const isTall = ["masroufi", "sakina", "inspectra"].includes(project.id);
   const background = project.tintDeep ?? "#13151b";
 
   return new ImageResponse(

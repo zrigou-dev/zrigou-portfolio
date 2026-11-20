@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useI18n } from "@/i18n/I18nProvider";
 
 // Game States: 
 // 0: Idle (Click to start)
@@ -11,6 +12,8 @@ import { motion, AnimatePresence } from "framer-motion";
 // 4: Too Early (Failed)
 
 export default function ReactionGame() {
+  const { t } = useI18n();
+  const g = t.games.reaction;
   const [gameState, setGameState] = useState(0); 
   const [reactionTime, setReactionTime] = useState(null);
   const [bestTime, setBestTime] = useState(null);
@@ -73,40 +76,40 @@ export default function ReactionGame() {
         return (
           <div className="flex flex-col items-center">
             <span className="text-6xl mb-4">🔴</span>
-            <span className="text-2xl font-bold tracking-widest text-white">WAIT FOR GREEN...</span>
+            <span className="text-2xl font-bold tracking-widest text-white">{g.wait}</span>
           </div>
         );
       case 2:
         return (
           <div className="flex flex-col items-center">
              <span className="text-6xl mb-4">🟢</span>
-             <span className="text-4xl font-extrabold tracking-widest text-white">CLICK NOW!</span>
+             <span className="text-4xl font-extrabold tracking-widest text-white">{g.clickNow}</span>
           </div>
         );
       case 3:
         return (
           <div className="flex flex-col items-center">
-             <div className="text-white text-lg font-medium mb-2">Reaction Time:</div>
-             <div className="text-5xl font-mono font-bold text-white mb-6">{reactionTime} ms</div>
-             <div className="text-white/80 text-sm tracking-widest uppercase font-semibold">Click to try again</div>
+             <div className="text-white text-lg font-medium mb-2">{g.time}</div>
+             <div dir="ltr" className="text-5xl font-mono font-bold text-white mb-6">{reactionTime} ms</div>
+             <div className="text-white/80 text-sm tracking-widest uppercase font-semibold">{g.again}</div>
           </div>
         );
       case 4:
         return (
           <div className="flex flex-col items-center text-white">
              <span className="text-6xl mb-4">⚠️</span>
-             <h3 className="text-2xl font-bold mb-2">Too Early!</h3>
-             <p className="text-white/80">You clicked before it turned green.</p>
-             <div className="mt-6 text-sm tracking-widest uppercase font-semibold">Click to try again</div>
+             <h3 className="text-2xl font-bold mb-2">{g.tooEarly}</h3>
+             <p className="text-white/80">{g.tooEarlyText}</p>
+             <div className="mt-6 text-sm tracking-widest uppercase font-semibold">{g.again}</div>
           </div>
         );
       default:
         return (
           <div className="flex flex-col items-center text-center px-4">
              <span className="text-6xl mb-6">⏱️</span>
-             <h3 className="text-3xl font-bold text-ink mb-4 font-mono">REACTION TEST</h3>
-             <p className="text-muted mb-8 max-w-xs">When the red box turns green, click as quickly as you can!</p>
-             <div className="px-8 py-3 bg-accent-fill text-on-accent font-bold rounded shadow-lg">START TEST</div>
+             <h3 className="text-3xl font-bold text-ink mb-4 font-mono">{g.title}</h3>
+             <p className="text-muted mb-8 max-w-xs">{g.intro}</p>
+             <div className="px-8 py-3 bg-accent-fill text-on-accent font-bold rounded shadow-lg">{g.start}</div>
           </div>
         );
     }
@@ -118,10 +121,10 @@ export default function ReactionGame() {
       {/* Best Score Header */}
       <div className="flex justify-between items-center w-full mb-6">
         <h2 className="text-xl font-bold text-ink-soft font-mono tracking-widest">
-           SPEED TEST
+           {g.speedTest}
         </h2>
         <div className="text-sm font-sans font-medium text-muted bg-bg px-3 py-1.5 rounded-full border border-line">
-           BEST: <span className="text-accent font-bold ml-1">{bestTime ? `${bestTime} ms` : "---"}</span>
+           {g.best} <span dir="ltr" className="text-accent font-bold ms-1">{bestTime ? `${bestTime} ms` : "---"}</span>
         </div>
       </div>
 

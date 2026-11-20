@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
 import { FiArrowDown, FiArrowLeft, FiArrowRight, FiArrowUp } from "react-icons/fi";
+import { useI18n } from "@/i18n/I18nProvider";
 
 const GRID_SIZE = 20;
 const INITIAL_SNAKE = [
@@ -19,13 +20,15 @@ const KEY_DIRECTIONS = {
   ArrowRight: { x: 1, y: 0 },
 };
 const TOUCH_CONTROLS = [
-  { key: "ArrowUp", label: "Move up", Icon: FiArrowUp, area: "col-start-2" },
-  { key: "ArrowLeft", label: "Move left", Icon: FiArrowLeft, area: "col-start-1 row-start-2" },
-  { key: "ArrowDown", label: "Move down", Icon: FiArrowDown, area: "col-start-2 row-start-2" },
-  { key: "ArrowRight", label: "Move right", Icon: FiArrowRight, area: "col-start-3 row-start-2" },
+  { key: "ArrowUp", labelKey: "up", Icon: FiArrowUp, area: "col-start-2" },
+  { key: "ArrowLeft", labelKey: "left", Icon: FiArrowLeft, area: "col-start-1 row-start-2" },
+  { key: "ArrowDown", labelKey: "down", Icon: FiArrowDown, area: "col-start-2 row-start-2" },
+  { key: "ArrowRight", labelKey: "right", Icon: FiArrowRight, area: "col-start-3 row-start-2" },
 ];
 
 export default function SnakeGame() {
+  const { t } = useI18n();
+  const g = t.games.snake;
   const [snake, setSnake] = useState(INITIAL_SNAKE);
   const [direction, setDirection] = useState(INITIAL_DIRECTION);
   const [food, setFood] = useState({ x: 5, y: 5 });
@@ -143,19 +146,19 @@ export default function SnakeGame() {
   return (
     <div className="bg-surface p-6 sm:p-8 rounded-2xl shadow-xl border border-line flex flex-col items-center w-full max-w-lg mx-auto">
       <h2 className="text-3xl font-bold text-ink mb-6 font-mono text-center tracking-wider">
-        SNAKE RUN
+        {g.title}
       </h2>
 
       <div className="flex justify-between w-full mb-4 px-2">
         <div className="text-muted font-mono text-lg">
-          SCORE: <span className="text-zellige font-bold">{score}</span>
+          {g.score}: <span className="text-zellige font-bold">{score}</span>
         </div>
         <div className="text-muted font-mono text-lg">
-          BEST: <span className="text-accent font-bold">{highScore}</span>
+          {g.best}: <span className="text-accent font-bold">{highScore}</span>
         </div>
       </div>
 
-      <div className="relative bg-bg border-4 border-line rounded-lg overflow-hidden shadow-inner">
+      <div dir="ltr" className="relative bg-bg border-4 border-line rounded-lg overflow-hidden shadow-inner">
         {/* Game Grid */}
         <div
           className="grid gap-[1px] bg-line"
@@ -195,12 +198,12 @@ export default function SnakeGame() {
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm flex flex-col items-center justify-center">
             {gameOver ? (
               <motion.div initial={{ scale: 0.8 }} animate={{ scale: 1 }} className="text-center">
-                <h3 className="text-3xl font-bold text-red-500 mb-2">GAME OVER</h3>
+                <h3 className="text-3xl font-bold text-red-500 mb-2">{g.gameOver}</h3>
                 <button
                   onClick={resetGame}
                   className="px-6 py-2 bg-accent-fill hover:opacity-90 text-on-accent font-bold rounded-full transition"
                 >
-                  PLAY AGAIN
+                  {g.playAgain}
                 </button>
               </motion.div>
             ) : (
@@ -209,21 +212,21 @@ export default function SnakeGame() {
                   onClick={resetGame}
                   className="px-6 py-3 bg-accent-fill hover:opacity-90 text-on-accent font-bold rounded-full transition"
                 >
-                  START GAME
+                  {g.start}
                 </button>
-                <p className="mt-4 text-sm text-white/80">Use the arrow keys or the buttons below.</p>
+                <p className="mt-4 px-4 text-sm text-white/80">{g.hint}</p>
               </motion.div>
             )}
           </div>
         )}
       </div>
 
-      <div className="mt-5 grid grid-cols-3 gap-2 [@media(hover:hover)]:hidden">
-        {TOUCH_CONTROLS.map(({ key, label, Icon, area }) => (
+      <div dir="ltr" className="mt-5 grid grid-cols-3 gap-2 [@media(hover:hover)]:hidden">
+        {TOUCH_CONTROLS.map(({ key, labelKey, Icon, area }) => (
           <button
             key={key}
             type="button"
-            aria-label={label}
+            aria-label={g[labelKey]}
             onPointerDown={() => steer(KEY_DIRECTIONS[key])}
             className={`grid size-14 place-items-center rounded-xl border border-line bg-surface-2 text-ink active:bg-accent-fill active:text-on-accent ${area}`}
           >
@@ -233,7 +236,7 @@ export default function SnakeGame() {
       </div>
 
       <div className="mt-6 hidden text-center text-muted text-xs [@media(hover:hover)]:block">
-        Press <span className="text-ink-soft font-mono border border-line px-1 rounded">SPACE</span> to pause/unpause
+        {g.pausePre} <span className="text-ink-soft font-mono border border-line px-1 rounded">{g.space}</span> {g.pausePost}
       </div>
     </div>
   );

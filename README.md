@@ -18,12 +18,29 @@ npm run check-lint
 | Path | What |
 | --- | --- |
 | `src/data/site.js` | Name, contact details, navigation, experience, services, skills |
-| `src/data/projects.js` | Every project and case study. Adding an entry creates its page, sitemap URL and social image |
+| `src/data/projects.js` | Every project and case study, in English. Adding an entry creates its page, sitemap URLs and social image |
+| `src/i18n/` | Languages: `config.js`, UI strings in `dictionaries/`, translated case studies and site content in `content/` |
 | `src/lib/schema.js` | JSON-LD structured data (Person, WebSite, ProfilePage, SoftwareApplication, BreadcrumbList) |
 | `src/lib/og.jsx` | Social share images, generated per page |
 | `src/components/ZelligeCanvas.jsx` | The interactive hero background |
 | `public/images/projects/` | Project screenshots, WebP |
-| `public/downloads/` | Files offered for download, such as the Masroufi APK |
+| `public/downloads/` | Files offered for download, such as the Masroufi and Sakina APKs |
+
+## Languages
+
+The site is in English, French and Arabic (right-to-left). English stays at the root (`/`, `/projects/sakina`), French
+and Arabic live under `/fr` and `/ar`. `next.config.mjs` rewrites the root to `/en/*` internally, so there is no proxy.
+
+- **UI text:** `src/i18n/dictionaries/{en,fr,ar}.js`, one shared shape. English is the source of truth.
+- **Projects:** `src/data/projects.js` is English. `src/i18n/content/projects.{fr,ar}.js` override only the text,
+  keyed by project id. Lists (highlights, gallery captions) are merged by position, so keep the same order.
+- **Experience, services, skills:** `src/i18n/content/site.{fr,ar}.js`, merged by position.
+- **Adding a language:** add it to `src/i18n/config.js`, create its dictionary and two content files, and
+  register them in `get-dictionary.js` and `content.js`.
+- **Layout:** use logical utilities (`ms-`, `pe-`, `text-start`, `end-`) and `rtl:` variants, never `left`/`right`.
+  Brand names carry `lang="en"` so Arabic letter-spacing resets do not flatten their tight tracking.
+- **Not translated on purpose:** the name Mohamed Zrigou, product names, technology names, and the social share
+  images (their font has no Arabic glyphs).
 
 ## Project images
 

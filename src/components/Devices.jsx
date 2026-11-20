@@ -3,7 +3,7 @@ import Image from "next/image";
 export function BrowserFrame({ src, alt, address, width = 1680, height = 1050, sizes, priority = false, className = "" }) {
   return (
     <figure className={`device-browser m-0 overflow-hidden rounded-xl border border-white/10 bg-[#1b1e26] ${className}`}>
-      <div className="flex items-center gap-1.5 px-3 py-2.5" aria-hidden="true">
+      <div dir="ltr" className="flex items-center gap-1.5 px-3 py-2.5" aria-hidden="true">
         <span className="size-2.5 rounded-full bg-white/20" />
         <span className="size-2.5 rounded-full bg-white/20" />
         <span className="size-2.5 rounded-full bg-white/20" />

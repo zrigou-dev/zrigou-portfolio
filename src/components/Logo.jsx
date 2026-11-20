@@ -1,4 +1,7 @@
+"use client";
 import Link from "next/link";
+import { localizePath } from "@/i18n/config";
+import { useI18n } from "@/i18n/I18nProvider";
 
 export function LogoMark({ className = "" }) {
   return (
@@ -13,10 +16,11 @@ export function LogoMark({ className = "" }) {
 }
 
 export default function Logo() {
+  const { locale, t } = useI18n();
   return (
-    <Link href="/" className="group flex items-center gap-2.5" aria-label="Mohamed Zrigou, home">
+    <Link href={localizePath(locale)} className="group flex items-center gap-2.5" aria-label={t.common.homeLabel}>
       <LogoMark className="size-8 text-accent-fill transition-transform duration-700 ease-out-expo group-hover:rotate-45" />
-      <span className="font-display text-lg font-bold tracking-tight">Zrigou</span>
+      <span lang="en" className="font-display text-lg font-bold tracking-tight">Zrigou</span>
     </Link>
   );
 }

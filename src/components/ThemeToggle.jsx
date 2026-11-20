@@ -2,10 +2,12 @@
 import { useTheme } from "next-themes";
 import { useSyncExternalStore } from "react";
 import { FiMoon, FiSun } from "react-icons/fi";
+import { useI18n } from "@/i18n/I18nProvider";
 
 const subscribe = () => () => {};
 
 export default function ThemeToggle({ className = "" }) {
+  const { t } = useI18n();
   const { resolvedTheme, setTheme } = useTheme();
   const mounted = useSyncExternalStore(subscribe, () => true, () => false);
   const isDark = !mounted || resolvedTheme === "dark";
@@ -14,7 +16,7 @@ export default function ThemeToggle({ className = "" }) {
     <button
       type="button"
       onClick={() => setTheme(isDark ? "light" : "dark")}
-      aria-label={`Switch to ${isDark ? "light" : "dark"} theme`}
+      aria-label={isDark ? t.common.switchToLight : t.common.switchToDark}
       className={`grid size-11 place-items-center rounded-full text-ink-soft transition-colors hover:bg-surface-2 hover:text-ink ${className}`}
     >
       {isDark ? <FiSun className="size-[18px]" aria-hidden="true" /> : <FiMoon className="size-[18px]" aria-hidden="true" />}

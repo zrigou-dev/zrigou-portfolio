@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { fmt } from "@/i18n/format";
+import { useI18n } from "@/i18n/I18nProvider";
 
 const WINNING_COMBINATIONS = [
   [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
@@ -10,6 +12,8 @@ const WINNING_COMBINATIONS = [
 ];
 
 export default function TicTacToe() {
+  const { t } = useI18n();
+  const g = t.games.tictactoe;
   const [board, setBoard] = useState(Array(9).fill(null));
   const [isXNext, setIsXNext] = useState(true);
   const [isVsRobot, setIsVsRobot] = useState(true);
@@ -133,18 +137,18 @@ export default function TicTacToe() {
   return (
     <div className="bg-surface p-6 sm:p-8 rounded-2xl shadow-xl border border-line flex flex-col items-center w-full max-w-sm mx-auto">
       <h2 className="text-3xl font-bold text-ink mb-4 font-mono text-center tracking-wider">
-        TIC TAC TOE
+        {g.title}
       </h2>
 
       {/* Mode Selector */}
-      <div className="flex bg-bg rounded-lg p-1 mb-6 border border-line w-full relative">
+      <div dir="ltr" className="flex bg-bg rounded-lg p-1 mb-6 border border-line w-full relative">
         <button
           onClick={() => toggleMode(true)}
           className={`flex-1 py-1.5 text-sm font-semibold z-10 transition-colors duration-300 ${
             isVsRobot ? "text-on-accent" : "text-muted hover:text-ink"
           }`}
         >
-          Vs Robot 🤖
+          {g.vsRobot}
         </button>
         <button
           onClick={() => toggleMode(false)}
@@ -152,7 +156,7 @@ export default function TicTacToe() {
             !isVsRobot ? "text-on-accent" : "text-muted hover:text-ink"
           }`}
         >
-          Player Vs Player
+          {g.vsPlayer}
         </button>
         {/* Animated Pill Background */}
         <motion.div
@@ -170,9 +174,9 @@ export default function TicTacToe() {
           }`}
         >
           <span className="text-accent text-2xl">X</span>
-          <span className="text-xs text-muted uppercase tracking-widest mt-1">Player 1</span>
+          <span className="text-xs text-muted uppercase tracking-widest mt-1">{g.player1}</span>
         </div>
-        <div className="text-muted font-bold text-sm">VS</div>
+        <div className="text-muted font-bold text-sm">{g.vs}</div>
         <div
           className={`font-semibold flex flex-col items-center transition-opacity duration-300 ${
             !isXNext && !winner && !isDraw ? "opacity-100" : "opacity-30"
@@ -180,7 +184,7 @@ export default function TicTacToe() {
         >
           <span className="text-zellige text-2xl">O</span>
           <span className="text-xs text-muted uppercase tracking-widest mt-1">
-            {isVsRobot ? (isRobotThinking ? "Thinking..." : "Robot") : "Player 2"}
+            {isVsRobot ? (isRobotThinking ? g.thinking : g.robot) : g.player2}
           </span>
         </div>
       </div>
@@ -223,7 +227,7 @@ export default function TicTacToe() {
             animate={{ opacity: 1, y: 0 }}
             className="text-2xl font-bold text-zellige tracking-wide"
           >
-            {winner === "X" ? "Player 1" : isVsRobot ? "Robot" : "Player 2"} Wins! 🎉
+            {fmt(g.wins, { name: winner === "X" ? g.player1 : isVsRobot ? g.robot : g.player2 })}
           </motion.div>
         ) : isDraw ? (
           <motion.div
@@ -231,7 +235,7 @@ export default function TicTacToe() {
             animate={{ opacity: 1, y: 0 }}
             className="text-2xl font-bold text-muted tracking-wide"
           >
-            It's a Draw! 🤝
+            {g.draw}
           </motion.div>
         ) : null}
       </div>
@@ -242,7 +246,7 @@ export default function TicTacToe() {
         onClick={resetGame}
         className="px-8 py-3 bg-transparent border-2 border-zellige text-zellige font-bold rounded-lg hover:bg-zellige hover:text-bg transition duration-300 w-full tracking-wider uppercase text-sm"
       >
-        {winner || isDraw ? "Play Again" : "Reset Game"}
+        {winner || isDraw ? g.again : g.reset}
       </motion.button>
     </div>
   );

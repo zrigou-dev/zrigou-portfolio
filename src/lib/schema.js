@@ -1,17 +1,18 @@
 import { site } from "@/data/site";
+import { localizePath } from "@/i18n/config";
 
 const personId = `${site.url}/#person`;
 const websiteId = `${site.url}/#website`;
 
-export function personSchema() {
+export function personSchema(locale, t) {
   return {
     "@context": "https://schema.org",
     "@type": "Person",
     "@id": personId,
     name: site.name,
     url: site.url,
-    jobTitle: site.jobTitle,
-    description: site.description,
+    jobTitle: t.meta.jobTitle,
+    description: t.meta.description,
     email: `mailto:${site.email}`,
     address: {
       "@type": "PostalAddress",
@@ -34,27 +35,28 @@ export function personSchema() {
   };
 }
 
-export function websiteSchema() {
+export function websiteSchema(locale, t) {
   return {
     "@context": "https://schema.org",
     "@type": "WebSite",
     "@id": websiteId,
     url: site.url,
     name: site.name,
-    description: site.description,
-    inLanguage: "en",
+    description: t.meta.description,
+    inLanguage: locale,
     author: { "@id": personId },
     publisher: { "@id": personId },
   };
 }
 
-export function profilePageSchema() {
+export function profilePageSchema(locale, t) {
   return {
     "@context": "https://schema.org",
     "@type": "ProfilePage",
-    "@id": `${site.url}/#profile`,
-    url: site.url,
-    name: site.title,
+    "@id": `${site.url}${localizePath(locale)}#profile`,
+    url: `${site.url}${localizePath(locale)}`,
+    name: t.meta.title,
+    inLanguage: locale,
     isPartOf: { "@id": websiteId },
     mainEntity: { "@id": personId },
   };
@@ -76,17 +78,19 @@ export function breadcrumbSchema(items) {
 const applicationCategories = {
   clinoly: "HealthApplication",
   masroufi: "FinanceApplication",
+  sakina: "LifestyleApplication",
   inspectra: "DeveloperApplication",
 };
 
-export function projectSchema(project) {
-  const path = `/projects/${project.id}`;
+export function projectSchema(project, locale) {
+  const path = localizePath(locale, `/projects/${project.id}`);
   const shared = {
     "@context": "https://schema.org",
     "@id": `${site.url}${path}#project`,
     name: project.title,
     url: project.url ?? `${site.url}${path}`,
     description: project.description,
+    inLanguage: locale,
     image: `${site.url}${project.image}`,
     author: { "@id": personId },
   };

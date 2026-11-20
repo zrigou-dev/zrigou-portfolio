@@ -3,31 +3,28 @@ import { FiArrowUpRight, FiPhone } from "react-icons/fi";
 import CopyEmail from "@/components/CopyEmail";
 import { site } from "@/data/site";
 
-const channels = [
-  { label: "WhatsApp", detail: site.phoneDisplay, href: site.whatsapp, Icon: FaWhatsapp, external: true },
-  { label: "Phone", detail: site.phoneDisplay, href: `tel:${site.phone}`, Icon: FiPhone },
-  { label: "LinkedIn", detail: "mohamed-zrigou", href: site.linkedin, Icon: FaLinkedinIn, external: true },
-  { label: "GitHub", detail: "zrigou-dev", href: site.github, Icon: FaGithub, external: true },
-];
+export default function Contact({ t }) {
+  const channels = [
+    { label: t.contact.whatsapp, detail: site.phoneDisplay, href: site.whatsapp, Icon: FaWhatsapp, external: true },
+    { label: t.contact.phone, detail: site.phoneDisplay, href: `tel:${site.phone}`, Icon: FiPhone },
+    { label: t.contact.linkedin, detail: "mohamed-zrigou", href: site.linkedin, Icon: FaLinkedinIn, external: true },
+    { label: t.contact.github, detail: "zrigou-dev", href: site.github, Icon: FaGithub, external: true },
+  ];
 
-export default function Contact() {
   return (
-    <section id="contact" className="border-t border-line py-24 md:py-36">
+    <section id="contact" className="border-t border-line section-y">
       <div className="shell">
-        <p className="eyebrow mb-6">Contact</p>
-        <h2 data-reveal className="font-display text-[clamp(3rem,11vw,10.5rem)] font-extrabold leading-[0.95] tracking-[-0.02em]">
-          Have a project? <span className="block text-accent">Let&apos;s talk.</span>
+        <p className="eyebrow mb-4 md:mb-6">{t.contact.eyebrow}</p>
+        <h2 data-reveal className="font-display text-[clamp(2.5rem,1rem+8vw,7.5rem)] font-extrabold leading-[0.98] tracking-[-0.03em]">
+          {t.contact.title1} <span className="block text-accent">{t.contact.title2}</span>
         </h2>
 
-        <div className="mt-12 grid gap-10 lg:grid-cols-12">
+        <div className="mt-8 grid gap-8 md:mt-12 md:gap-10 lg:grid-cols-12">
           <div data-reveal className="lg:col-span-6">
-            <p className="max-w-lg text-pretty text-lg leading-relaxed text-ink-soft">
-              Tell me what you are building and where it needs to go. I work with teams and founders on web, mobile
-              and browser products.
-            </p>
-            <div className="mt-6 flex flex-wrap items-center gap-3">
-              <a href={`mailto:${site.email}`} className="btn btn-primary min-w-0 max-w-full">
-                <span className="truncate">{site.email}</span>
+            <p className="lead max-w-lg">{t.contact.text}</p>
+            <div className="mt-5 flex items-center gap-2.5 md:mt-6 md:gap-3">
+              <a href={`mailto:${site.email}`} className="btn btn-primary min-w-0 flex-1 sm:flex-none">
+                <span dir="ltr" className="truncate">{site.email}</span>
               </a>
               <CopyEmail />
             </div>
@@ -39,12 +36,12 @@ export default function Contact() {
                 <a
                   href={href}
                   {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                  className="group flex items-center gap-4 py-4 transition-[padding] duration-300 hover:pl-2"
+                  className="group flex min-h-14 items-center gap-4 py-3.5 transition-[padding] duration-300 hover:ps-2"
                 >
                   <Icon className="size-5 text-muted transition-colors group-hover:text-accent" aria-hidden="true" />
                   <span className="font-medium">{label}</span>
-                  <span className="ml-auto truncate text-sm text-muted">{detail}</span>
-                  <FiArrowUpRight className="size-4 shrink-0 text-muted" aria-hidden="true" />
+                  <span dir="ltr" className="ms-auto truncate text-sm text-muted">{detail}</span>
+                  <FiArrowUpRight className="size-4 shrink-0 text-muted rtl:-scale-x-100" aria-hidden="true" />
                 </a>
               </li>
             ))}

@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { fmt } from "@/i18n/format";
+import { useI18n } from "@/i18n/I18nProvider";
 import {
   FaRocket,
   FaRobot,
@@ -25,6 +27,8 @@ const ICONS = [
 ];
 
 export default function MemoryGame() {
+  const { t } = useI18n();
+  const g = t.games.memory;
   const [cards, setCards] = useState([]);
   const [flippedIndices, setFlippedIndices] = useState([]);
   const [matchedPairs, setMatchedPairs] = useState([]);
@@ -81,10 +85,10 @@ export default function MemoryGame() {
 
   return (
     <div className="bg-surface p-6 rounded-2xl shadow-xl border border-line flex flex-col items-center">
-      <h2 className="text-3xl font-bold text-ink mb-2">Memory Match</h2>
+      <h2 className="text-3xl font-bold text-ink mb-2">{g.title}</h2>
       <div className="flex justify-between w-full max-w-[300px] mb-6 text-muted font-medium">
-        <span>Moves: {moves}</span>
-        <span>Matches: {matchedPairs.length} / {ICONS.length}</span>
+        <span>{fmt(g.moves, { n: moves })}</span>
+        <span>{fmt(g.matches, { n: matchedPairs.length, total: ICONS.length })}</span>
       </div>
 
       <div className="grid grid-cols-4 gap-3 sm:gap-4 mb-8">
@@ -95,7 +99,7 @@ export default function MemoryGame() {
             <motion.button
               key={card.id}
               type="button"
-              aria-label={isFlipped ? `Card ${index + 1}, ${card.icon.key}` : `Card ${index + 1}, face down`}
+              aria-label={isFlipped ? fmt(g.cardUp, { n: index + 1, icon: g.icons[card.icon.key] }) : fmt(g.cardDown, { n: index + 1 })}
               className="relative w-16 h-16 sm:w-20 sm:h-20 aspect-square cursor-pointer"
               onClick={() => handleCardClick(index)}
               whileHover={{ scale: isFlipped ? 1 : 1.05 }}
@@ -135,8 +139,8 @@ export default function MemoryGame() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-6"
         >
-          <div className="text-2xl font-bold text-zellige mb-2">You Won! 🎉</div>
-          <p className="text-sm text-muted">Completed in {moves} moves.</p>
+          <div className="text-2xl font-bold text-zellige mb-2">{g.won}</div>
+          <p className="text-sm text-muted">{fmt(g.completed, { n: moves })}</p>
         </motion.div>
       )}
 
@@ -144,7 +148,7 @@ export default function MemoryGame() {
         onClick={initializeGame}
         className="px-6 py-2 bg-accent-fill hover:opacity-90 text-on-accent font-semibold rounded-full transition"
       >
-        {isWon ? "Play Again" : "Restart Game"}
+        {isWon ? g.again : g.restart}
       </button>
     </div>
   );

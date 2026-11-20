@@ -2,19 +2,27 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FiDownload, FiMenu, FiX } from "react-icons/fi";
+import { FaGithub, FaLinkedinIn, FaWhatsapp } from "react-icons/fa6";
+import { FiArrowUpRight, FiDownload, FiMenu, FiX } from "react-icons/fi";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 import Logo from "@/components/Logo";
 import ThemeToggle from "@/components/ThemeToggle";
 import { navLinks, site } from "@/data/site";
+import { localizePath, stripLocale } from "@/i18n/config";
+import { useI18n } from "@/i18n/I18nProvider";
 
 export default function Header() {
+  const { locale, t } = useI18n();
   const pathname = usePathname();
+  const route = stripLocale(pathname);
+  const isHome = route === "/";
+  const links = [...navLinks.map((link) => ({ ...link, label: t.nav[link.id] })), { href: "/games", id: "games", label: t.nav.play }];
   const menuRef = useRef(null);
   const [activeId, setActiveId] = useState(null);
 
   // Highlights the section that crosses the middle of the viewport.
   useEffect(() => {
-    if (pathname !== "/") return undefined;
+    if (!isHome) return undefined;
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
@@ -31,25 +39,25 @@ export default function Header() {
       observer.disconnect();
       setActiveId(null);
     };
-  }, [pathname]);
+  }, [isHome]);
 
   const openMenu = () => menuRef.current?.showModal();
   const closeMenu = () => menuRef.current?.close();
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 p-3">
-      <div className="mx-auto flex max-w-[88rem] items-center justify-between gap-4 rounded-full border border-line bg-bg/75 py-1.5 pl-5 pr-2 backdrop-blur-xl">
+    <header className="fixed inset-x-0 top-0 z-50 p-2.5 sm:p-3">
+      <div className="mx-auto flex max-w-[88rem] items-center justify-between gap-4 rounded-full border border-line bg-bg/80 py-1 ps-4 pe-1 shadow-[0_8px_30px_-12px_rgb(0_0_0/0.35)] backdrop-blur-xl sm:py-1.5 sm:ps-5 sm:pe-2">
         <Logo />
 
-        <nav aria-label="Primary" className="hidden items-center gap-1 lg:flex">
-          {navLinks.map((link) => {
-            const isActive = activeId === link.id;
+        <nav aria-label={t.common.primaryNav} className="hidden items-center gap-0.5 lg:flex xl:gap-1">
+          {links.map((link) => {
+            const isActive = link.id === "games" ? route === "/games" : activeId === link.id;
             return (
               <Link
                 key={link.id}
-                href={link.href}
-                aria-current={isActive ? "true" : undefined}
-                className={`rounded-full px-4 py-2.5 text-sm font-medium transition-colors ${
+                href={localizePath(locale, link.href)}
+                aria-current={isActive ? (link.id === "games" ? "page" : "true") : undefined}
+                className={`rounded-full px-3.5 py-2.5 text-sm font-medium transition-colors xl:px-4 ${
                   isActive ? "bg-surface-2 text-ink" : "text-muted hover:text-ink"
                 }`}
               >
@@ -57,32 +65,24 @@ export default function Header() {
               </Link>
             );
           })}
-          <Link
-            href="/games"
-            aria-current={pathname === "/games" ? "page" : undefined}
-            className={`rounded-full px-4 py-2.5 text-sm font-medium transition-colors ${
-              pathname === "/games" ? "bg-surface-2 text-ink" : "text-muted hover:text-ink"
-            }`}
-          >
-            Play
-          </Link>
         </nav>
 
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1 sm:gap-1.5">
+          <LanguageSwitcher />
           <ThemeToggle />
           <a
             href={site.cv}
             download={site.cvFilename}
-            className="hidden min-h-11 items-center gap-2 whitespace-nowrap rounded-full bg-accent-fill px-5 text-sm font-semibold text-on-accent transition-transform duration-300 hover:-translate-y-0.5 sm:inline-flex"
+            className="hidden min-h-11 items-center gap-2 whitespace-nowrap rounded-full bg-accent-fill px-5 text-sm font-semibold text-on-accent transition-transform duration-300 hover:-translate-y-0.5 sm:inline-flex lg:hidden xl:inline-flex"
           >
-            <FiDownload aria-hidden="true" /> Download CV
+            <FiDownload aria-hidden="true" /> {t.common.downloadCv}
           </a>
           <button
             type="button"
             onClick={openMenu}
-            aria-label="Open menu"
+            aria-label={t.common.openMenu}
             aria-haspopup="dialog"
-            className="grid size-11 place-items-center rounded-full bg-surface-2 lg:hidden"
+            className="grid size-11 place-items-center rounded-full bg-surface-2 transition-transform active:scale-95 lg:hidden"
           >
             <FiMenu className="size-5" aria-hidden="true" />
           </button>
@@ -92,39 +92,60 @@ export default function Header() {
 
       <dialog
         ref={menuRef}
-        aria-label="Menu"
+        aria-label={t.common.menu}
         onClick={(event) => {
           if (event.target === menuRef.current) closeMenu();
         }}
-        className="m-0 h-dvh max-h-none w-full max-w-none bg-bg p-3 text-ink backdrop:bg-transparent"
+        className="menu-sheet m-0 h-dvh max-h-none w-full max-w-none bg-bg p-2.5 text-ink backdrop:bg-transparent"
       >
         <div className="flex h-full flex-col">
-          <div className="flex items-center justify-between py-1.5 pl-5 pr-2">
+          <div className="flex items-center justify-between py-1 ps-4 pe-1">
             <Logo />
             <button
               type="button"
               onClick={closeMenu}
-              aria-label="Close menu"
-              className="grid size-11 place-items-center rounded-full bg-surface-2"
+              aria-label={t.common.closeMenu}
+              className="grid size-11 place-items-center rounded-full bg-surface-2 transition-transform active:scale-95"
             >
               <FiX className="size-5" aria-hidden="true" />
             </button>
           </div>
-          <nav aria-label="Mobile" className="flex flex-1 flex-col justify-center gap-1 px-5">
-            {[...navLinks, { href: "/games", id: "games", label: "Play" }].map((link) => (
-              <Link
-                key={link.id}
-                href={link.href}
-                onClick={closeMenu}
-                className="py-2 font-display text-5xl font-bold tracking-tight"
-              >
-                {link.label}
-              </Link>
-            ))}
+
+          <nav aria-label={t.common.mobileNav} className="mt-6 flex-1 overflow-y-auto px-4">
+            <ul className="border-t border-line">
+              {links.map((link, index) => (
+                <li key={link.id} className="menu-item border-b border-line" style={{ "--i": index }}>
+                  <Link href={localizePath(locale, link.href)} onClick={closeMenu} className="group flex items-center gap-4 py-4 active:bg-surface/60">
+                    <span className="w-6 font-mono text-xs text-muted">0{index + 1}</span>
+                    <span className="font-display text-[1.75rem] font-semibold leading-none tracking-tight">{link.label}</span>
+                    <FiArrowUpRight className="ms-auto size-5 text-muted rtl:-scale-x-100" aria-hidden="true" />
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </nav>
-          <a href={site.cv} download={site.cvFilename} className="btn btn-primary m-5">
-            <FiDownload aria-hidden="true" /> Download CV
-          </a>
+
+          <div className="menu-item space-y-4 px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4" style={{ "--i": 7 }}>
+            <a href={site.cv} download={site.cvFilename} className="btn btn-primary w-full">
+              <FiDownload aria-hidden="true" /> {t.common.downloadCv}
+            </a>
+            <div className="flex items-center justify-between">
+              <p className="text-sm text-muted">{t.common.city}, {t.common.country}</p>
+              <ul className="flex gap-2">
+                {[
+                  { href: site.github, label: "GitHub", Icon: FaGithub },
+                  { href: site.linkedin, label: "LinkedIn", Icon: FaLinkedinIn },
+                  { href: site.whatsapp, label: "WhatsApp", Icon: FaWhatsapp },
+                ].map(({ href, label, Icon }) => (
+                  <li key={label}>
+                    <a href={href} target="_blank" rel="noopener noreferrer" aria-label={label} className="grid size-11 place-items-center rounded-full border border-line text-ink-soft active:bg-surface-2">
+                      <Icon className="size-[1.05rem]" aria-hidden="true" />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
         </div>
       </dialog>
     </header>

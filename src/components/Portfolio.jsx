@@ -1,33 +1,28 @@
 import ClientWork from "@/components/ClientWork";
 import FlagshipCard from "@/components/FlagshipCard";
-import { flagshipProjects } from "@/data/projects";
-
-export default function Portfolio() {
+export default function Portfolio({ locale, t, flagships, clients }) {
   return (
-    <section id="work" className="py-24 md:py-36">
+    <section id="work" className="section-y">
       <div className="shell">
-        <div data-reveal className="mb-12 grid gap-6 md:mb-16 lg:grid-cols-12 lg:items-end">
+        <div data-reveal className="mb-8 grid gap-4 md:mb-14 md:gap-6 lg:grid-cols-12 lg:items-end">
           <div className="lg:col-span-8">
-            <p className="eyebrow mb-4">Selected work</p>
-            <h2 className="section-title">Products I own, from schema to screen.</h2>
+            <p className="eyebrow mb-3 md:mb-4">{t.portfolio.eyebrow}</p>
+            <h2 className="section-title">{t.portfolio.title}</h2>
           </div>
-          <p className="max-w-md text-pretty leading-relaxed text-ink-soft lg:col-span-4">
-            Three products I designed and built myself. Every screen below is from the real software, running on
-            sample data.
-          </p>
+          <p className="lead max-w-md lg:col-span-4">{t.portfolio.intro}</p>
         </div>
 
-        <div className="space-y-5 md:space-y-6">
-          {flagshipProjects.map((project, index) => (
-            <FlagshipCard key={project.id} project={project} index={index} />
+        <div className="space-y-4 md:space-y-6">
+          {flagships.map((project, index) => (
+            <FlagshipCard key={project.id} project={project} index={index} locale={locale} t={t} />
           ))}
         </div>
 
-        <div data-reveal className="mb-8 mt-24 md:mb-12 md:mt-36">
-          <p className="eyebrow mb-4">Client & team projects</p>
-          <h2 className="section-title">Platforms people rely on.</h2>
+        <div data-reveal className="mb-6 mt-16 md:mb-10 md:mt-32">
+          <p className="eyebrow mb-3 md:mb-4">{t.portfolio.clientEyebrow}</p>
+          <h2 className="section-title">{t.portfolio.clientTitle}</h2>
         </div>
-        <ClientWork />
+        <ClientWork projects={clients} />
       </div>
     </section>
   );
